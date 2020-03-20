@@ -186,13 +186,13 @@ a queue, and perform the validation work on a separate thread.</p>
 <p>On validation failure, the connection will be closed.</p>
 <p>The result code passed to <code>validationFailure</code> will be propagated to the 
 web-socket client as the <em>close reason</em>.</p>
-<h2 id="connected">CONNECTED</h2>
+<h2 id="connected"><code>CONNECTED</code></h2>
 <p>Normal operation, web-socket messages will be passed to the application as they are received.</p>
 <p>Messages sent to the <code>Session</code> will be framed and transmitted to the remote peer.</p>
-<h2 id="closing">CLOSING</h2>
+<h2 id="closing"><code>CLOSING</code></h2>
 <p>Close has been requested by the application or the session container. The close frame will be sent to
 the remote peer.</p>
-<h2 id="disconnected">DISCONNECTED</h2>
+<h2 id="disconnected"><code>DISCONNECTED</code></h2>
 <p>The session is no longer connected.</p>
 
 
