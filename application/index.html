@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>Babl - High Performance WebSocket Server</title>
+
+      
+      
+
+      <!-- CSS -->
+      
+      <link rel="stylesheet" href="https://babl.ws/book.css">
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="menu">
+            
+            
+            <nav role="navigation">
+                <ul>
+                    
+                        
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;getting_started&#x2F;">
+                                    
+                                    Getting Started
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li class="active">
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;application&#x2F;">
+                                    
+                                    Application
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;architecture&#x2F;">
+                                    
+                                    Architecture
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;lifecyle&#x2F;">
+                                    
+                                    Session Lifecycle
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;config&#x2F;">
+                                    
+                                    Configuration
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;monitoring&#x2F;">
+                                    
+                                    Monitoring
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;performance&#x2F;">
+                                    
+                                    Performance
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;javadocs&#x2F;">
+                                    
+                                    Java Docs
+                                </a>
+                                
+                            </li>
+                        
+                    
+                </ul>
+            </nav>
+            
+            
+        </div>
+
+        <div class="page">
+            <div class="page__header">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                
+            </div>
+
+            <div class="page__content">
+                
+                <div class="book-content">
+                    
+    <h1>Application</h1>
+    <p>At the heart of <strong>Babl</strong> server is your <code>Application</code> where your business logic is executed.</p>
+<p>Your application is executed on a single thread, and will be invoked when any of the following events occur:</p>
+<ul>
+<li>A new web-socket session is established</li>
+<li>A message is received from an established session</li>
+<li>A web-socket session is disconnected</li>
+</ul>
+<p>When running in <code>DIRECT</code> mode, your application is invoked on the same thread responsible for 
+processing network I/O and handling web-socket protocol framing. </p>
+<p>When running in <code>DETACHED</code> mode, your application is invoked on its own thread.</p>
+<p>For more detail on the two different modes, see <a href="https://babl.ws/architecture/">Architecture</a>.</p>
+<h2 id="the-application-interface">The <code>Application</code> Interface</h2>
+<p>Your application must implement the <code>Application</code> interface, shown below.</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#859900;">package </span><span style="color:#657b83;">com.aitusoftware.babl.user;
+
+</span><span style="color:#cb4b16;">import </span><span style="color:#859900;">com</span><span style="color:#657b83;">.</span><span style="color:#859900;">aitusoftware</span><span style="color:#657b83;">.</span><span style="color:#859900;">babl</span><span style="color:#657b83;">.</span><span style="color:#859900;">websocket</span><span style="color:#657b83;">.</span><span style="color:#859900;">DisconnectReason</span><span style="color:#657b83;">;
+</span><span style="color:#cb4b16;">import </span><span style="color:#859900;">com</span><span style="color:#657b83;">.</span><span style="color:#859900;">aitusoftware</span><span style="color:#657b83;">.</span><span style="color:#859900;">babl</span><span style="color:#657b83;">.</span><span style="color:#859900;">websocket</span><span style="color:#657b83;">.</span><span style="color:#859900;">Session</span><span style="color:#657b83;">;
+
+</span><span style="color:#cb4b16;">import </span><span style="color:#859900;">org</span><span style="color:#657b83;">.</span><span style="color:#859900;">agrona</span><span style="color:#657b83;">.</span><span style="color:#859900;">DirectBuffer</span><span style="color:#657b83;">;
+
+</span><span style="color:#859900;">public </span><span style="color:#268bd2;">interface </span><span style="color:#b58900;">Application
+</span><span style="color:#657b83;">{
+    </span><span style="color:#268bd2;">int </span><span style="color:#b58900;">onSessionConnected</span><span style="color:#657b83;">(
+        </span><span style="color:#859900;">Session </span><span style="color:#268bd2;">session</span><span style="color:#657b83;">)</span><span style="color:#b58900;">;
+
+    </span><span style="color:#268bd2;">int </span><span style="color:#b58900;">onSessionDisconnected</span><span style="color:#657b83;">(
+        </span><span style="color:#859900;">Session </span><span style="color:#268bd2;">session</span><span style="color:#657b83;">,
+        </span><span style="color:#859900;">DisconnectReason </span><span style="color:#268bd2;">reason</span><span style="color:#657b83;">)</span><span style="color:#b58900;">;
+
+    </span><span style="color:#268bd2;">int </span><span style="color:#b58900;">onSessionMessage</span><span style="color:#657b83;">(
+        </span><span style="color:#859900;">Session </span><span style="color:#268bd2;">session</span><span style="color:#657b83;">,
+        </span><span style="color:#859900;">ContentType </span><span style="color:#268bd2;">contentType</span><span style="color:#657b83;">,
+        </span><span style="color:#859900;">DirectBuffer </span><span style="color:#268bd2;">msg</span><span style="color:#657b83;">,
+        </span><span style="color:#268bd2;">int offset</span><span style="color:#657b83;">,
+        </span><span style="color:#268bd2;">int length</span><span style="color:#657b83;">)</span><span style="color:#b58900;">;
+</span><span style="color:#657b83;">}
+</span></pre><h2 id="the-echo-application">The Echo Application</h2>
+<p>The simplest application we can write is simply to echo back messages to the client connection.</p>
+<p>This application is deployed in the example container described in <a href="https://babl.ws/getting_started/">Getting Started</a>.</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#859900;">public final </span><span style="color:#268bd2;">class </span><span style="color:#b58900;">EchoApplication </span><span style="color:#859900;">implements </span><span style="color:#b58900;">Application
+</span><span style="color:#657b83;">{
+    </span><span style="color:#859900;">private final MutableDirectBuffer </span><span style="color:#b58900;">buffer </span><span style="color:#657b83;">= 
+        </span><span style="color:#859900;">new ExpandableDirectByteBuffer</span><span style="color:#657b83;">(</span><span style="color:#6c71c4;">512</span><span style="color:#657b83;">);
+
+    @</span><span style="color:#268bd2;">Override
+    </span><span style="color:#859900;">public </span><span style="color:#268bd2;">int </span><span style="color:#b58900;">onSessionConnected</span><span style="color:#657b83;">(
+        </span><span style="color:#859900;">final Session </span><span style="color:#268bd2;">session</span><span style="color:#657b83;">)
+    {
+        </span><span style="color:#859900;">System</span><span style="color:#657b83;">.</span><span style="color:#b58900;">out</span><span style="color:#657b83;">.</span><span style="color:#268bd2;">printf</span><span style="color:#657b83;">(</span><span style="color:#839496;">&quot;</span><span style="color:#2aa198;">Session %d connected%n</span><span style="color:#839496;">&quot;</span><span style="color:#657b83;">,</span><span style="color:#b58900;"> session</span><span style="color:#657b83;">.</span><span style="color:#268bd2;">id</span><span style="color:#657b83;">());
+        </span><span style="color:#859900;">return SendResult</span><span style="color:#657b83;">.</span><span style="color:#cb4b16;">OK</span><span style="color:#657b83;">;
+    }
+
+    @</span><span style="color:#268bd2;">Override
+    </span><span style="color:#859900;">public </span><span style="color:#268bd2;">int </span><span style="color:#b58900;">onSessionDisconnected</span><span style="color:#657b83;">(
+        </span><span style="color:#859900;">final Session </span><span style="color:#268bd2;">session</span><span style="color:#657b83;">, 
+        </span><span style="color:#859900;">final DisconnectReason </span><span style="color:#268bd2;">reason</span><span style="color:#657b83;">)
+    {
+        </span><span style="color:#859900;">System</span><span style="color:#657b83;">.</span><span style="color:#b58900;">out</span><span style="color:#657b83;">.</span><span style="color:#268bd2;">printf</span><span style="color:#657b83;">(</span><span style="color:#839496;">&quot;</span><span style="color:#2aa198;">Session %d disconnected due to %s%n</span><span style="color:#839496;">&quot;</span><span style="color:#657b83;">,</span><span style="color:#b58900;"> 
+            session</span><span style="color:#657b83;">.</span><span style="color:#268bd2;">id</span><span style="color:#657b83;">(),</span><span style="color:#b58900;"> reason</span><span style="color:#657b83;">.</span><span style="color:#268bd2;">name</span><span style="color:#657b83;">());
+        </span><span style="color:#859900;">return SendResult</span><span style="color:#657b83;">.</span><span style="color:#cb4b16;">OK</span><span style="color:#657b83;">;
+    }
+
+    @</span><span style="color:#268bd2;">Override
+    </span><span style="color:#859900;">public </span><span style="color:#268bd2;">int </span><span style="color:#b58900;">onSessionMessage</span><span style="color:#657b83;">(
+        </span><span style="color:#859900;">final Session </span><span style="color:#268bd2;">session</span><span style="color:#657b83;">,
+        </span><span style="color:#859900;">final ContentType </span><span style="color:#268bd2;">contentType</span><span style="color:#657b83;">,
+        </span><span style="color:#859900;">final DirectBuffer </span><span style="color:#268bd2;">msg</span><span style="color:#657b83;">,
+        </span><span style="color:#859900;">final </span><span style="color:#268bd2;">int offset</span><span style="color:#657b83;">,
+        </span><span style="color:#859900;">final </span><span style="color:#268bd2;">int length</span><span style="color:#657b83;">)
+    {
+        //</span><span style="color:#93a1a1;"> copy request data to outbound buffer
+</span><span style="color:#b58900;">        buffer</span><span style="color:#657b83;">.</span><span style="color:#268bd2;">putBytes</span><span style="color:#657b83;">(</span><span style="color:#6c71c4;">0</span><span style="color:#657b83;">,</span><span style="color:#b58900;"> msg</span><span style="color:#657b83;">,</span><span style="color:#b58900;"> offset</span><span style="color:#657b83;">,</span><span style="color:#b58900;"> length</span><span style="color:#657b83;">);
+        </span><span style="color:#268bd2;">int</span><span style="color:#b58900;"> sendResult</span><span style="color:#657b83;">;
+        </span><span style="color:#859900;">do
+        </span><span style="color:#657b83;">{
+            //</span><span style="color:#93a1a1;"> send buffer to session
+</span><span style="color:#b58900;">            sendResult </span><span style="color:#657b83;">=</span><span style="color:#b58900;"> session</span><span style="color:#657b83;">.</span><span style="color:#268bd2;">send</span><span style="color:#657b83;">(</span><span style="color:#b58900;">contentType</span><span style="color:#657b83;">,</span><span style="color:#b58900;"> buffer</span><span style="color:#657b83;">, </span><span style="color:#6c71c4;">0</span><span style="color:#657b83;">,</span><span style="color:#b58900;"> length</span><span style="color:#657b83;">);
+        }
+        </span><span style="color:#859900;">while </span><span style="color:#657b83;">(</span><span style="color:#b58900;">sendResult </span><span style="color:#657b83;">!= </span><span style="color:#859900;">SendResult</span><span style="color:#657b83;">.</span><span style="color:#cb4b16;">OK</span><span style="color:#657b83;">);
+
+        </span><span style="color:#859900;">return</span><span style="color:#b58900;"> sendResult</span><span style="color:#657b83;">;
+    }
+}
+</span></pre>
+
+                </div>
+            </div>
+
+            <div class="prev-link">
+                
+    
+    
+    
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+                
+                    <a class="previous" href="https:&#x2F;&#x2F;babl.ws&#x2F;getting_started&#x2F;"><</a>
+                
+                
+                
+            
+        
+    
+
+            </div>
+
+            <div class="next-link">
+                
+    
+        
+        
+        
+        
+            
+            
+            
+        
+            
+            
+            
+                
+            
+        
+            
+            
+                <a class="next" href="https:&#x2F;&#x2F;babl.ws&#x2F;architecture&#x2F;">></a>
+                
+                
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+    
+
+            </div>
+        </div>
+
+        
+            
+            <script type="text/javascript" src="https://babl.ws/book.js"></script>
+        
+    </body>
+
+</html>

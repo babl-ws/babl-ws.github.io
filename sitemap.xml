@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+        <url>
+            <loc>https://babl.ws/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https://babl.ws/application/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https://babl.ws/architecture/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https://babl.ws/config/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https://babl.ws/getting_started/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https://babl.ws/javadocs/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https://babl.ws/lifecyle/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https://babl.ws/monitoring/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https://babl.ws/performance/</loc>
+            
+        </url>
+    
+</urlset>

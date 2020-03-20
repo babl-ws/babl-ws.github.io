@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>Babl - High Performance WebSocket Server</title>
+
+      
+      
+
+      <!-- CSS -->
+      
+      <link rel="stylesheet" href="https://babl.ws/book.css">
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="menu">
+            
+            
+            <nav role="navigation">
+                <ul>
+                    
+                        
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;getting_started&#x2F;">
+                                    
+                                    Getting Started
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;application&#x2F;">
+                                    
+                                    Application
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;architecture&#x2F;">
+                                    
+                                    Architecture
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li class="active">
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;lifecyle&#x2F;">
+                                    
+                                    Session Lifecycle
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;config&#x2F;">
+                                    
+                                    Configuration
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;monitoring&#x2F;">
+                                    
+                                    Monitoring
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;performance&#x2F;">
+                                    
+                                    Performance
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;javadocs&#x2F;">
+                                    
+                                    Java Docs
+                                </a>
+                                
+                            </li>
+                        
+                    
+                </ul>
+            </nav>
+            
+            
+        </div>
+
+        <div class="page">
+            <div class="page__header">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                
+            </div>
+
+            <div class="page__content">
+                
+                <div class="book-content">
+                    
+    <h1>Session Lifecycle</h1>
+    <p>When a new socket connection is made, a <code>Session</code> will step through several states.</p>
+<h2 id="upgrading"><code>UPGRADING</code></h2>
+<p>The <code>Connection: Upgrade</code> directive is processed, and the initial <code>HTTP</code> connection is 
+upgraded to the web-socket protocol.</p>
+<h2 id="validating"><code>VALIDATING</code></h2>
+<p>Once the connection has been upgraded, but before the application is notified of the new session,
+the session must be <em>validated</em>. By default, all sessions will be validated, but <strong>Babl</strong> allows
+a custom strategy to be defined to perform user-defined validation (for example an authentication operation).</p>
+<p>As part of the validation step, all <code>HTTP</code> request headers are propagated from the connection
+upgrade request. To provide custom validation, implement the <code>ConnectionValidator</code> interface:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#859900;">public </span><span style="color:#268bd2;">interface </span><span style="color:#b58900;">ConnectionValidator
+</span><span style="color:#657b83;">{
+    </span><span style="color:#268bd2;">void </span><span style="color:#b58900;">validateConnection</span><span style="color:#657b83;">(
+        </span><span style="color:#859900;">ValidationResult </span><span style="color:#268bd2;">validationResult</span><span style="color:#657b83;">,
+        </span><span style="color:#859900;">Consumer</span><span style="color:#657b83;">&lt;</span><span style="color:#859900;">BiConsumer</span><span style="color:#657b83;">&lt;</span><span style="color:#859900;">CharSequence</span><span style="color:#657b83;">, </span><span style="color:#859900;">CharSequence</span><span style="color:#657b83;">&gt;&gt; </span><span style="color:#268bd2;">headerProvider</span><span style="color:#657b83;">,
+        </span><span style="color:#859900;">ValidationResultPublisher </span><span style="color:#268bd2;">validationResultPublisher</span><span style="color:#657b83;">)</span><span style="color:#b58900;">;
+</span><span style="color:#657b83;">}
+</span></pre>
+<p>The validation will be invoked on the event-loop thread, so it is vital that any implementation of
+this interface <strong>does not block</strong>. The recommended approach is to copy the supplied parameters to 
+a queue, and perform the validation work on a separate thread.</p>
+<p>Implementations should take note of the following:</p>
+<ul>
+<li>The headers are provided as <code>CharSequence</code> objects to avoid allocation - references to these objects must not be retained</li>
+<li>The <code>ValidationResult</code> should be mutated to indicate whether validation of the connection was successful - references to this object must not be retained</li>
+<li>The <code>ValidationResultPublisher</code> is a thread-safe sink for the mutated <code>ValidationResult</code></li>
+</ul>
+<h3 id="publishing-the-validation-result">Publishing the validation result</h3>
+<p>Validation is either successful:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#859900;">public</span><span style="color:#657b83;"> void </span><span style="color:#268bd2;">validateConnection</span><span style="color:#657b83;">(...) {
+    validationResult.</span><span style="color:#268bd2;">validationSuccess</span><span style="color:#657b83;">();
+    </span><span style="color:#859900;">while </span><span style="color:#657b83;">(</span><span style="color:#859900;">!</span><span style="color:#657b83;">validationResultPublisher.</span><span style="color:#268bd2;">publishResult</span><span style="color:#657b83;">(validationResult)) {
+        </span><span style="color:#93a1a1;">// result queue full, need to retry after a short wait
+    </span><span style="color:#657b83;">}
+}
+</span></pre>
+<p>or unsuccessful:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#93a1a1;">// Valid user codes are 4000-4999
+</span><span style="color:#859900;">static final </span><span style="color:#268bd2;">short </span><span style="color:#cb4b16;">AUTHENTICATION_FAILED </span><span style="color:#657b83;">= </span><span style="color:#6c71c4;">4007</span><span style="color:#657b83;">;
+
+</span><span style="color:#859900;">public</span><span style="color:#657b83;"> void </span><span style="color:#268bd2;">validateConnection</span><span style="color:#657b83;">(...) {
+    validationResult.</span><span style="color:#268bd2;">validationFailure</span><span style="color:#657b83;">(</span><span style="color:#cb4b16;">AUTHENTICATION_FAILED</span><span style="color:#657b83;">);
+    </span><span style="color:#859900;">while </span><span style="color:#657b83;">(</span><span style="color:#859900;">!</span><span style="color:#657b83;">validationResultPublisher.</span><span style="color:#268bd2;">publishResult</span><span style="color:#657b83;">(validationResult)) {
+        </span><span style="color:#93a1a1;">// result queue full, need to retry after a short wait
+    </span><span style="color:#657b83;">}
+}
+</span></pre>
+<p>On validation success, the session will transition to the <code>CONNECTED</code> state and the application will be notified.</p>
+<p>On validation failure, the connection will be closed.</p>
+<p>The result code passed to <code>validationFailure</code> will be propagated to the 
+web-socket client as the <em>close reason</em>.</p>
+<h2 id="connected">CONNECTED</h2>
+<p>Normal operation, web-socket messages will be passed to the application as they are received.</p>
+<p>Messages sent to the <code>Session</code> will be framed and transmitted to the remote peer.</p>
+<h2 id="closing">CLOSING</h2>
+<p>Close has been requested by the application or the session container. The close frame will be sent to
+the remote peer.</p>
+<h2 id="disconnected">DISCONNECTED</h2>
+<p>The session is no longer connected.</p>
+
+
+                </div>
+            </div>
+
+            <div class="prev-link">
+                
+    
+    
+    
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+                
+                    <a class="previous" href="https:&#x2F;&#x2F;babl.ws&#x2F;architecture&#x2F;"><</a>
+                
+                
+                
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+
+            </div>
+
+            <div class="next-link">
+                
+    
+        
+        
+        
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+                
+            
+        
+            
+            
+                <a class="next" href="https:&#x2F;&#x2F;babl.ws&#x2F;config&#x2F;">></a>
+                
+                
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+    
+
+            </div>
+        </div>
+
+        
+            
+            <script type="text/javascript" src="https://babl.ws/book.js"></script>
+        
+    </body>
+
+</html>

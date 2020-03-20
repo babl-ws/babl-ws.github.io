@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>Babl - High Performance WebSocket Server</title>
+
+      
+      
+
+      <!-- CSS -->
+      
+      <link rel="stylesheet" href="https://babl.ws/book.css">
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="menu">
+            
+            
+            <nav role="navigation">
+                <ul>
+                    
+                        
+                        
+                            
+                            <li class="active">
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;getting_started&#x2F;">
+                                    
+                                    Getting Started
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;application&#x2F;">
+                                    
+                                    Application
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;architecture&#x2F;">
+                                    
+                                    Architecture
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;lifecyle&#x2F;">
+                                    
+                                    Session Lifecycle
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;config&#x2F;">
+                                    
+                                    Configuration
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;monitoring&#x2F;">
+                                    
+                                    Monitoring
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;performance&#x2F;">
+                                    
+                                    Performance
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;javadocs&#x2F;">
+                                    
+                                    Java Docs
+                                </a>
+                                
+                            </li>
+                        
+                    
+                </ul>
+            </nav>
+            
+            
+        </div>
+
+        <div class="page">
+            <div class="page__header">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                
+            </div>
+
+            <div class="page__content">
+                
+                <div class="book-content">
+                    
+    <h1>Getting Started</h1>
+    <p><strong>Babl</strong> is a high-performance, scalable web-socket server designed for use in low-latency applications.</p>
+<p>Built from the ground up to provide blazing fast execution speeds,
+<strong>Babl</strong> will comfortably handle high throughput, large session-count workloads without slowing down.</p>
+<p>Using an event-driven reactive programming model, your application code is executed in an 
+allocation-free, lock-free event-loop for maximum efficiency and mechanical sympathy.</p>
+<h2 id="your-application">Your Application</h2>
+<p><strong>Babl</strong> is a container for your application, providing a high-performance proxy for web-socket connections.</p>
+<p>Your application will be notified of connection lifecycle events (<code>onConnect</code>, <code>onDisconnect</code>), and receive
+messages (<code>onMessage</code>) from client connections.</p>
+<p>Your application will publish responses to inbound messages, which will be sent back to the client.</p>
+<p>For more information, see <a href="https://babl.ws/application/">Application</a>.</p>
+<h2 id="using-babl">Using Babl</h2>
+<h3 id="docker">Docker</h3>
+<p><strong>Babl</strong> is packaged in a <code>docker</code> container for ease of deployment. The base container is tagged as 
+<code>&quot;babl:0.1.0-SNAPSHOT&quot;</code> (or <code>&quot;babl:latest&quot;</code> for the latest released image), 
+and should be extended with your own container definition:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">FROM babl:latest
+
+COPY my-app/build/lib/ /babl/lib/
+COPY my-app/build/config/my-app.properties /babl/config
+ENV BABL_CONFIG_FILE=&quot;/babl/config/my-app.properties&quot;
+ENV JVM_RUNTIME_PARAMETERS=&quot;-Dbabl.debug.enabled=true&quot;
+</span></pre>
+<p>The project source code contains an example <code>docker-compose</code> file that creates a simple echo application with HTML
+resources hosted by an <code>nginx</code> instance.</p>
+<h3 id="standalone">Standalone</h3>
+<p><strong>Babl</strong> can also be used in a standalone manner. Simply download the <code>-all</code> variant of the JAR from 
+the releases page, and execute the following:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">$ java -jar /path/to/babl-all-0.1.0-SNAPSHOT.jar /path/to/config.properties
+</span></pre>
+<p>Note that there is no legacy HTTP server functionality, so any HTML resources will need to be 
+hosted using a suitable technology.</p>
+<p>For more information on configuration, see <a href="https://babl.ws/config/">Configuration</a>.</p>
+
+
+                </div>
+            </div>
+
+            <div class="prev-link">
+                
+    
+    
+    
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+
+            </div>
+
+            <div class="next-link">
+                
+    
+        
+        
+        
+        
+            
+            
+            
+                
+            
+        
+            
+            
+                <a class="next" href="https:&#x2F;&#x2F;babl.ws&#x2F;application&#x2F;">></a>
+                
+                
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+    
+
+            </div>
+        </div>
+
+        
+            
+            <script type="text/javascript" src="https://babl.ws/book.js"></script>
+        
+    </body>
+
+</html>

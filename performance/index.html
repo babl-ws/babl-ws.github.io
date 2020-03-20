@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title>Babl - High Performance WebSocket Server</title>
+
+      
+      
+
+      <!-- CSS -->
+      
+      <link rel="stylesheet" href="https://babl.ws/book.css">
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="menu">
+            
+            
+            <nav role="navigation">
+                <ul>
+                    
+                        
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;getting_started&#x2F;">
+                                    
+                                    Getting Started
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;application&#x2F;">
+                                    
+                                    Application
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;architecture&#x2F;">
+                                    
+                                    Architecture
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;lifecyle&#x2F;">
+                                    
+                                    Session Lifecycle
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;config&#x2F;">
+                                    
+                                    Configuration
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;monitoring&#x2F;">
+                                    
+                                    Monitoring
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li class="active">
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;performance&#x2F;">
+                                    
+                                    Performance
+                                </a>
+                                
+                            </li>
+                        
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;javadocs&#x2F;">
+                                    
+                                    Java Docs
+                                </a>
+                                
+                            </li>
+                        
+                    
+                </ul>
+            </nav>
+            
+            
+        </div>
+
+        <div class="page">
+            <div class="page__header">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                
+            </div>
+
+            <div class="page__content">
+                
+                <div class="book-content">
+                    
+    <h1>Performance</h1>
+    <p>This page describes settings that can be applied to increase the performance of <strong>Babl</strong> server.</p>
+<p><em>Any improvement in performance should be measured against a baseline without these settings
+enabled to ensure that they have a measurable and useful effect</em>.</p>
+<p>Configuration items below can either be set on the command-line, or included in the 
+config file passed to the <code>Server</code> program (in this case, without their <code>-D</code> prefix).</p>
+<h2 id="jvm-arguments">JVM Arguments</h2>
+<h3 id="disable-buffer-bounds-checking">Disable Buffer Bounds Checking</h3>
+<p>When rigorous testing has been completed, and an application has been deployed to production,
+buffer bounds-checking can be disabled for an extra performance boost.</p>
+<p>Any performance gain is expected to only be a few percent. Any advantage should be measured and
+weighed up against the possible downsides 
+(an incorrect buffer read in the application will cause a segmentation fault and program crash).</p>
+<p>Disable bounds-checking with this JVM parameter:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-Dagrona.disable.bounds.checks=true
+</span></pre><h3 id="cache-java-lang-integer-objects">Cache <code>java.lang.Integer</code> Objects</h3>
+<p>Deep in the heart of the Java IO libraries, <code>java.lang.Integer</code> variables are used to 
+represent file-descriptors. Depending on how many sockets are created on the system in use,
+the value presented below may need to be increased to reduce allocation.</p>
+<p>Cache a fixed number of <code>java.lang.Integer</code> values with this JVM parameter:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-Djava.lang.Integer.IntegerCache.high=65536
+</span></pre><h3 id="prefer-ipv4-network-stack">Prefer IPv4 Network Stack</h3>
+<p>A hint to the JVM that it should not default to using IPv6 even when the system supports it.</p>
+<p>Enable with this JVM parameter:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-Djava.net.preferIPv4Stack=true
+</span></pre><h3 id="trust-non-static-final-fields">Trust Non-Static Final Fields</h3>
+<p>A hint to the JIT compiler that <code>final</code> fields can be trusted as final (i.e. subject to certain optimisations).</p>
+<p>Enable with these JVM parameters:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-XX:+UnlockExperimentalVMOptions -XX:+TrustFinalNonStaticFields
+</span></pre><h3 id="immediate-biased-locking">Immediate Biased Locking</h3>
+<p>Perform biased locking immediately. Older JVMs wait several seconds before attempting to bias locks.
+Since <strong>Babl</strong> is inherently single-threaded when dealing with <code>synchronized</code> objects 
+(e.g. <code>java.nio.SocketChannel</code>), lock biasing should be performed at start-up.</p>
+<p>This setting may have negligible effect on JDK9+, as intrinsic locks were replaced with 
+<code>java.util.concurrent.ReentrantLock</code> instances in the <code>java.nio</code> socket components.</p>
+<p>Enable with this JVM parameter:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-XX:BiasedLockingStartupDelay=0
+</span></pre><h2 id="babl-configuration">Babl Configuration</h2>
+<h3 id="disable-nagle-s-algorithm">Disable Nagle's Algorithm</h3>
+<p>Setting this flag will tell the operating system to send TCP packets as soon as they are queued,
+rather than waiting for more data to improve batching.</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-Dbabl.socket.tcpNoDelay.enabled=true
+</span></pre><h3 id="use-busy-spin-in-server-event-loop">Use Busy-spin in Server Event-loop</h3>
+<p>Uses a busy-spin wait-loop when processing the Server event-loop. 
+Setting this property can reduce latency between a message being received from a client,
+and being passed to the application. Setting this property will cause more CPU usage.</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-Dbabl.server.idle.strategy=BUSY_SPIN
+</span></pre><h3 id="use-busy-spin-in-ipc-transport">Use Busy-spin in IPC Transport</h3>
+<p>Uses a busy-spin wait-loop when communicating with the IPC transport.
+Setting this property will cause more CPU usage.</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-Dbabl.proxy.performance.mode=HIGH
+</span></pre><h3 id="place-ipc-shared-memory-files-on-dev-shm">Place IPC shared-memory files on <code>/dev/shm</code></h3>
+<p>Reduces the chance of page-faults.</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-Dbabl.proxy.driver.dir=/dev/shm/babl
+</span></pre>
+
+                </div>
+            </div>
+
+            <div class="prev-link">
+                
+    
+    
+    
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+                
+                    <a class="previous" href="https:&#x2F;&#x2F;babl.ws&#x2F;monitoring&#x2F;"><</a>
+                
+                
+                
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+        
+        
+            
+        
+    
+
+            </div>
+
+            <div class="next-link">
+                
+    
+        
+        
+        
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+        
+            
+            
+            
+                
+            
+        
+            
+            
+                <a class="next" href="https:&#x2F;&#x2F;babl.ws&#x2F;javadocs&#x2F;">></a>
+                
+                
+            
+            
+        
+    
+
+            </div>
+        </div>
+
+        
+            
+            <script type="text/javascript" src="https://babl.ws/book.js"></script>
+        
+    </body>
+
+</html>

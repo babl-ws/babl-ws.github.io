@@ -1,0 +1,11 @@
+com.aitusoftware.babl.codec
+com.aitusoftware.babl.config
+com.aitusoftware.babl.io
+com.aitusoftware.babl.log
+com.aitusoftware.babl.monitoring
+com.aitusoftware.babl.pool
+com.aitusoftware.babl.proxy
+com.aitusoftware.babl.time
+com.aitusoftware.babl.user
+com.aitusoftware.babl.websocket
+com.aitusoftware.babl.websocket.routing
