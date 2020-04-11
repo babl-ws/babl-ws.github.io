@@ -110,6 +110,16 @@
                                 
                             </li>
                         
+                            
+                            <li >
+                                
+                                <a href="https:&#x2F;&#x2F;babl.ws&#x2F;open_source&#x2F;">
+                                    
+                                    Open Source
+                                </a>
+                                
+                            </li>
+                        
                     
                 </ul>
             </nav>
@@ -147,6 +157,16 @@ weighed up against the possible downsides
 <p>Disable bounds-checking with this JVM parameter:</p>
 <pre style="background-color:#fdf6e3;">
 <span style="color:#657b83;">-Dagrona.disable.bounds.checks=true
+</span></pre><h3 id="pre-touch-logbuffers">Pre-touch LogBuffers</h3>
+<p>Pre-touches pages to ensure they are faulted into the process immediately.</p>
+<p>Only useful in <code>DETACHED</code> mode.</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-Daeron.pre.touch.mapped.memory=true
+</span></pre><h3 id="disable-sparse-files">Disable Sparse Files</h3>
+<p>Forces Aeron to create non-sparse files.</p>
+<p>Only useful in <code>DETACHED</code> mode.</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-Daeron.term.buffer.sparse.file=false
 </span></pre><h3 id="cache-java-lang-integer-objects">Cache <code>java.lang.Integer</code> Objects</h3>
 <p>Deep in the heart of the Java IO libraries, <code>java.lang.Integer</code> variables are used to 
 represent file-descriptors. Depending on how many sockets are created on the system in use,
@@ -173,6 +193,11 @@ Since <strong>Babl</strong> is inherently single-threaded when dealing with <cod
 <p>Enable with this JVM parameter:</p>
 <pre style="background-color:#fdf6e3;">
 <span style="color:#657b83;">-XX:BiasedLockingStartupDelay=0
+</span></pre><h3 id="pre-touch-memory-pages">Pre-touch memory pages</h3>
+<p>Causes the JVM to fault-in heap memory pages on start-up.</p>
+<p>Enable with this JVM parameter:</p>
+<pre style="background-color:#fdf6e3;">
+<span style="color:#657b83;">-XX:+AlwaysPreTouch
 </span></pre><h2 id="babl-configuration">Babl Configuration</h2>
 <h3 id="disable-nagle-s-algorithm">Disable Nagle's Algorithm</h3>
 <p>Setting this flag will tell the operating system to send TCP packets as soon as they are queued,
@@ -204,6 +229,11 @@ Setting this property will cause more CPU usage.</p>
     
     
     
+    
+        
+        
+            
+        
     
         
         
@@ -296,6 +326,10 @@ Setting this property will cause more CPU usage.</p>
                 <a class="next" href="https:&#x2F;&#x2F;babl.ws&#x2F;javadocs&#x2F;">></a>
                 
                 
+            
+            
+        
+            
             
             
         

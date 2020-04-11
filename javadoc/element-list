@@ -1,5 +1,6 @@
 com.aitusoftware.babl.codec
 com.aitusoftware.babl.config
+com.aitusoftware.babl.ext
 com.aitusoftware.babl.io
 com.aitusoftware.babl.log
 com.aitusoftware.babl.monitoring
