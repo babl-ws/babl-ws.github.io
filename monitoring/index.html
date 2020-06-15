@@ -156,7 +156,7 @@ metrics back-end for processing.</p>
 <p>Records server-wide statistics, contained in the server <em>mark-file</em> <code>${SERVER_DIR}/babl-server.mark</code>.</p>
 <p>Can be read using the program <code>com.aitusoftware.babl.monitoring.SessionContainerStatisticsPrinter</code>:</p>
 <pre style="background-color:#fdf6e3;">
-<span style="color:#657b83;">$ java -cp babl-0.3.0-all.jar \
+<span style="color:#657b83;">$ java -cp babl-0.4.1-all.jar \
     com.aitusoftware.babl.monitoring.SessionContainerStatisticsPrinter \
     $SERVER_DIR
 Timestamp: 2021-03-14T15:32:05.358Z
@@ -180,7 +180,7 @@ Max Event Loop Ms    :                   1
 <p>Records per-session statistics, contained in files named <code>${SERVER_DIR}/babl-session-statistics-N.data</code>.</p>
 <p>Can be read using the program <code>com.aitusoftware.babl.monitoring.SessionStatisticsPrinter</code>:</p>
 <pre style="background-color:#fdf6e3;">
-<span style="color:#657b83;">$ java -cp babl-0.3.0-all.jar \
+<span style="color:#657b83;">$ java -cp babl-0.4.1-all.jar \
     com.aitusoftware.babl.monitoring.SessionStatisticsPrinter \
     $SERVER_DIR
 Session ID:                                 711
@@ -216,7 +216,7 @@ Send Back Pressure Events:                    0
 <p>Any exceptions are logged to an <code>ErrorBuffer</code> for efficient reporting, and can be viewed using the program
 <code>com.aitusoftware.babl.monitoring.ErrorPrinter</code>:</p>
 <pre style="background-color:#fdf6e3;">
-<span style="color:#657b83;">$ java -cp babl-0.3.0-all.jar \
+<span style="color:#657b83;">$ java -cp babl-0.4.1-all.jar \
     com.aitusoftware.babl.monitoring.ErrorPrinter \
     $SERVER_DIR
 No errors reported.
