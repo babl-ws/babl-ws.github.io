@@ -161,7 +161,7 @@ messages (<code>onMessage</code>) from client connections.</p>
 <h3 id="docker">Docker</h3>
 <p>Repository is available at <a href="https://hub.docker.com/r/aitusoftware/babl">https://hub.docker.com/r/aitusoftware/babl</a></p>
 <p><strong>Babl</strong> is packaged in a <code>docker</code> container for ease of deployment. The base container is tagged as 
-<code>&quot;aitusoftware/babl:0.4.1&quot;</code> (or <code>&quot;aitusoftware/babl:latest&quot;</code> for the latest released image), 
+<code>&quot;aitusoftware/babl:0.5.0&quot;</code> (or <code>&quot;aitusoftware/babl:latest&quot;</code> for the latest released image), 
 and should be extended with your own container definition:</p>
 <pre style="background-color:#fdf6e3;">
 <span style="color:#657b83;">FROM aitusoftware/babl:latest
@@ -177,7 +177,7 @@ resources hosted by an <code>nginx</code> instance.</p>
 <p><strong>Babl</strong> can also be used in a standalone manner. Simply download the <code>-all</code> variant of the JAR from 
 the releases page, and execute the following:</p>
 <pre style="background-color:#fdf6e3;">
-<span style="color:#657b83;">$ java -jar /path/to/babl-all-0.4.1.jar /path/to/config.properties
+<span style="color:#657b83;">$ java -jar /path/to/babl-all-0.5.0.jar /path/to/config.properties
 </span></pre>
 <p>Note that there is no legacy HTTP server functionality, so any HTML resources will need to be 
 hosted using a suitable technology.</p>

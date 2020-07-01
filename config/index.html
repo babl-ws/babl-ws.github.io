@@ -222,7 +222,7 @@
 <tr><td></td><td></td></tr>
 <tr><td></td><td><strong>Server Idle Strategy (<code>String</code>)</strong></td></tr>
 <tr><td><strong>Description</strong></td><td>Sets the idling strategy used in the Server event-loop. One of <code>BUSY_SPIN,YIELDING,BACK_OFF,SLEEPING</code>.</td></tr>
-<tr><td><strong>Default</strong></td><td><code>SLEEPING</code></td></tr>
+<tr><td><strong>Default</strong></td><td><code>BUSY_SPIN</code></td></tr>
 <tr><td><strong>Property</strong></td><td><code>babl.server.idle.strategy</code></td></tr>
 <tr><td><strong>API</strong></td><td><code>SessionContainerConfig.serverIdleStrategy</code></td></tr>
 </tbody></table>
@@ -340,9 +340,9 @@
 <tr><td></td><td></td></tr>
 <tr><td></td><td><strong>Performance Mode (<code>String</code>)</strong></td></tr>
 <tr><td><strong>Description</strong></td><td>Configures the performance level of the launched MediaDriver</td></tr>
-<tr><td><strong>Default</strong></td><td><code>PerformanceMode.LOW</code></td></tr>
-<tr><td><strong>Property</strong></td><td><code>babl.proxy.performance.mode</code></td></tr>
-<tr><td><strong>API</strong></td><td><code>ProxyConfig.performanceMode</code></td></tr>
+<tr><td><strong>Default</strong></td><td><code>PerformanceMode.HIGH</code></td></tr>
+<tr><td><strong>Property</strong></td><td><code>babl.performance.mode</code></td></tr>
+<tr><td><strong>API</strong></td><td><code>PerformanceConfig.performanceMode</code></td></tr>
 </tbody></table>
 <h2 id="jvm-settings">JVM Settings</h2>
 <p>For best performance, set the following system properties:</p>
