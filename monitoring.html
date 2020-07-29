@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Babl Low-Latency WebSocket Server - Index</title>
+    <title>Babl Low-Latency WebSocket Server - Monitoring</title>
     <link rel="stylesheet" type="text/css" href="assets/style/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Babl Low Latency Java Websocket Server is a high performance solution for real-time web messaging.">
@@ -75,59 +75,102 @@
 
 <div class="container" role="main">
     <div class="content-heading">
-        <h3>Getting Started</h3>
+        <h3>Monitoring</h3>
     </div>
     <div class="content-body">
         <p>
-            <strong>Babl</strong> is a high-performance, scalable web-socket server designed for use in low-latency applications.<br/><br/>
-            Built from the ground up to provide blazing fast execution speeds, and featuring a novel auto-scaling
-            mechanism, <strong>Babl</strong> will comfortably handle high throughput, large session-count workloads without slowing down.<br/><br/>
-            Using an event-driven reactive programming model, your application code is executed in an allocation-free,
-            lock-free event-loop for maximum efficiency and mechanical sympathy.<br/><br/>
-            <strong>Babl</strong> is particularly well suited to financial or crypto-currency exchanges, where clients may be connecting
-            to APIs using their own web-socket clients and latency is a key differentiator.
+            In order to maintain a constant memory footprint, <strong>Babl</strong> exports metrics to memory-mapped files that can be
+            processed by external programs. This means reporting of metrics remains fast, and prevents
+            allocation occurring due to 3rd-party monitoring libraries.<br/><br/>
+            The recommended approach is to read and interpret the exported monitoring data, and push to a metrics back-end for processing.<br/><br/>
+            Supported customers can benefit from integration with popular metrics backends (e.g. Influx, Prometheus),
+            and pre-prepared charts formatted for the Grafana charting system. See <a href="support.html">Support</a> for more information.
         </p>
-
-        <h4 class="heading heading-primary">Your Application</h4>
+        <h4 class="heading heading-primary">Exported Metrics</h4>
+        <h5>Server Statistics</h5>
         <p>
-            <strong>Babl</strong> is a container for your application, providing a high-performance proxy for web-socket connections.<br/><br/>
-            Your application will be notified of connection lifecycle events
-            (<code>onConnect</code>, <code>onDisconnect</code>),
-            and receive messages (<code>onMessage</code>) from client connections.<br/><br/>
-            Your application will publish responses to inbound messages, which will be sent back to the client.<br/><br/>
-            For more information, see <a href="application.html">Application</a>.
+            Records server-wide statistics, contained in the server mark-file
+            <code>${SERVER_DIR}/babl-server.mark</code>.<br/><br/>
+            Can be read using the program <code>com.aitusoftware.babl.monitoring.ServerStatisticsPrinter</code>:
         </p>
-        <h4 class="heading heading-primary">Using Babl</h4>
-
-        <h5>Docker</h5>
+        <pre>$ java -cp babl-0.5.0-all.jar \
+    com.aitusoftware.babl.monitoring.ServerStatisticsPrinter \
+    $SERVER_DIR
+Timestamp: 2021-03-14T15:32:05.358Z
+Bytes Read:                       42826384
+Bytes Written:                    42621246
+Active Sessions:                       176
+Back Pressure Events:                    2
+Invalid Opcode Events:                   0
+Max Event Loop Ms    :                   1</pre>
+        <ul class="list list-primary">
+            <li><em>Timestamp</em> - written by the server event-loop on each iteration; can be used as a liveness check</li>
+            <li><em>Bytes Read</em> - total number of bytes read from sockets</li>
+            <li><em>Bytes Written</em> - total number of bytes written to sockets</li>
+            <li><em>Active Sessions</em> - number of web-socket sessions currently connected</li>
+            <li><em>Back Pressure Events</em> - number of times the user Application could not keep up with incoming message rates</li>
+            <li><em>Invalid Opcode Events</em> - number of invalid web-socket frames received</li>
+            <li><em>Max Event Loop Ms</em> - max time (in milliseconds) spent processing all connected sessions</li>
+        </ul>
+        <h5>Session Statistics</h5>
         <p>
-            <strong>Babl</strong> is packaged in a docker container for ease of deployment.
-            The base container is tagged as <code>babl:0.5.0</code>
-            (or <code>babl:latest</code> for the latest released image), and should be extended with your own container definition:
+            Records per-session statistics, contained in files named <code>${SERVER_DIR}/babl-session-statistics-N.data</code>.<br/><br/>
+            Can be read using the program <code>com.aitusoftware.babl.monitoring.SessionStatisticsPrinter</code>:
         </p>
-        <pre>FROM babl:latest
-
-COPY my-app/build/lib/ /babl/lib/
-COPY my-app/build/config/my-app.properties /babl/config
-ENV BABL_CONFIG_FILE="/babl/config/my-app.properties"
-ENV JVM_RUNTIME_PARAMETERS="-Dbabl.debug.enabled=true"</pre>
+        <pre>$ java -cp babl-0.5.0-all.jar \
+    com.aitusoftware.babl.monitoring.SessionStatisticsPrinter \
+    $SERVER_DIR
+Session ID:                                 711
+Session State:                        CONNECTED
+Bytes Read:                              433878
+Bytes Written:                           433397
+Frames Decoded:                            1271
+Frames Encoded:                            2043
+Messages Received:                         1090
+Messages Sent:                             2043
+Receive Buffered Bytes:                       0
+Send Buffered Bytes:                          0
+Invalid Messages Received:                    0
+Invalid Pings Received:                       0
+Send Back Pressure Events:                    0</pre>
+        <ul class="list list-primary">
+            <li><em>Session ID</em> - server-assigned ID of the session</li>
+            <li><em>Session State</em> - current state of the session</li>
+            <li><em>Bytes Read</em> - total number of bytes read from session's socket</li>
+            <li><em>Bytes Written</em> - total number of bytes written to session's socket</li>
+            <li><em>Frames Decoded</em> - total number of web-socket frames decoded</li>
+            <li><em>Frames Encoded</em> - total number of web-socket frames encoded</li>
+            <li><em>Messages Received</em> - total number of complete messages received</li>
+            <li><em>Messages Sent</em> - total number of complete messages sent</li>
+            <li><em>Receive Buffered Bytes</em> - snapshot of the number of bytes currently queued for processing</li>
+            <li><em>Send Buffered Bytes</em> - snapshot of the number of bytes currently queued for sending</li>
+            <li><em>Invalid Messages Received</em> - total number of invalid messages received on the session</li>
+            <li><em>Invalid Pings Received</em> - total number of invalid pings received on the session</li>
+            <li><em>Send Back Pressure Events</em> - number of times the server has been unable to write data to the remote peer</li>
+        </ul>
+        <h5>Errors</h5>
         <p>
-            The project source code contains an
-            <a href="https://github.com/babl-ws/babl/blob/master/docker/docker-compose.yaml" target="_blank">example docker-compose</a> file.
-            This can be used to connect a simple echo application, with HTML resources hosted by an nginx instance.
+            Any exceptions are logged to an <code>ErrorBuffer</code> for efficient reporting, and can be viewed using the program <code>com.aitusoftware.babl.monitoring.ErrorPrinter</code>:
         </p>
-
-        <h5>Standalone</h5>
+        <pre>$ java -cp babl-0.5.0-all.jar \
+    com.aitusoftware.babl.monitoring.ErrorPrinter \
+    $SERVER_DIR
+No errors reported.</pre>
+        <h4 class="heading heading-primary">Docker</h4>
         <p>
-            <strong>Babl</strong> can also be used in a standalone manner.
-            Simply download the <em>-all</em> variant of the JAR from the releases page, and execute the following:
+            If running <strong>Babl</strong> in the supplied docker container, utility scripts are provided for viewing monitoring data:
         </p>
-        <pre>$ java -jar /path/to/babl-all-0.5.0.jar /path/to/config.properties</pre>
-
+        <ul class="list list-primary">
+            <li><code>/babl/bin/babl_print_server_stats.sh</code></li>
+            <li><code>/babl/bin/babl_print_session_stats.sh</code></li>
+            <li><code>/babl/bin/babl_print_errors.sh</code></li>
+        </ul>
         <p>
-            Note that there is no legacy HTTP server functionality, so any HTML resources will need to be hosted using a suitable technology.
-            For more information on configuration, see <a href="configuration.html">Configuration</a>.
+            If running the server in <code>DETACHED</code> mode, Aeron statistics can be displayed with:
         </p>
+        <ul class="list list-primary">
+            <li><code>/babl/bin/babl_aeron_stat.sh</code></li>
+        </ul>
     </div>
 </div>
     <script rel="javascript" src="assets/js/babl.js"></script>

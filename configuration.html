@@ -1,0 +1,872 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Babl Low-Latency WebSocket Server - Configuration</title>
+    <link rel="stylesheet" type="text/css" href="assets/style/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Babl Low Latency Java Websocket Server is a high performance solution for real-time web messaging.">
+    <meta name="keywords" content="Java Websocket web-socket low-latency high-performance garbage-free allocation-free real-time messaging scalable server"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="nav" role="navigation">
+    <div class="nav-top">
+        <ul>
+            <li class="logo" role="logo">
+                <h3>Babl&nbsp;<p>WEBSOCKET SERVER</p></h3>
+            </li>
+            <li>
+                <a href="https://hub.docker.com/r/aitusoftware/babl" target="_" role="link">
+                    <svg viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="docker">
+                        <title>Docker Logo</title>
+                        <desc>Docker Link</desc>
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" />
+                                <stop offset="100%" />
+                            </linearGradient>
+                        </defs>
+                        <g transform="translate(10.000000, 18.000000)">
+                            <path d="M36.6816828,14.0007123 C34.5223014,18.6710524 29.1844403,26 17,26 C4.98681223,26 1.89812143,18.7391462 1.16159055,13.9999765 Z M13.914,19.597 C13.69,19.09 13.117,18.906 12.595,19.088 C10.161,19.934 6.036,20.054 3.451,20.054 C3.913,20.738 4.463,21.398 5.107,22.017 C7.258,22.017 10.103,21.888 13.404,20.915 C13.934,20.759 14.138,20.102 13.914,19.597 Z M17,16 C15.8954305,16 15,16.8954305 15,18 C15,19.1045695 15.8954305,20 17,20 C18.1045695,20 19,19.1045695 19,18 C19,16.8954305 18.1045695,16 17,16 Z M36.5,0 C38.908,2.22 39.391,4.265 39,6 C40.339,4.978 42.162,4.533 45,5.516 C43.93,9.829 41.147,10.983 39,11 C38.579,11.003 38.182,10.972 37.828,10.924 C37.6924745,11.4110991 37.4683827,12.1225663 37.1251065,12.9750343 C36.174843,12.766512 35.3893743,12.399283 35,12 C33.819,13.874 27.479,13.461 27,12 C25.625,13.75 20.25,13.438 19,12 C17.938,13.375 12.063,13.688 11,12 C9.94,13.088 5.875,13.688 4,12 C2.96486686,13.0351331 1.2947704,13.0119941 1.03455553,13.001692 C0.859446112,11.2268752 1,10 1,10 L1,10 L31,10 C34.834,10 35,9 35,9 C33.705,7.227 32.586,3.543 36.5,0 Z" id="Path-2"></path>
+                            <path d="M17,17 C17.1030055,17 17.2023735,17.0155739 17.2958778,17.0444954 C17.1209475,17.1222959 17,17.2970236 17,17.5 C17,17.7761424 17.2238576,18 17.5,18 C17.7029764,18 17.8777041,17.8790525 17.9560454,17.7052949 C17.9844261,17.7976265 18,17.8969945 18,18 C18,18.5522847 17.5522847,19 17,19 C16.4477153,19 16,18.5522847 16,18 C16,17.4477153 16.4477153,17 17,17 Z" id="Oval-2"></path>
+                            <path d="M19,10 L14,10 L14,5 L19,5 L19,10 Z M29,5 L24,5 L24,10 L29,10 L29,5 Z M9,5 L4,5 L4,10 L9,10 L9,5 Z M24,0 L24,5 L19,5 L19,0 L24,0 Z M14,0 L14,5 L9,5 L9,0 L14,0 Z" id="Shape"></path>
+                        </g>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/babl-ws/babl" target="_" role="link">
+                    <svg width="163px" height="158px" viewBox="0 0 163 158" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  class="github">
+                        <title>Github Logo</title>
+                        <desc>Github Link</desc>
+                        <g>
+                            <path d="M21,80.387 C21,107.068 38.303,129.704 62.297,137.689 C65.315,138.248 66.423,136.379 66.423,134.784 C66.423,133.344 66.367,128.587 66.341,123.541 C49.541,127.194 45.996,116.416 45.996,116.416 C43.249,109.436 39.291,107.58 39.291,107.58 C33.812,103.832 39.704,103.909 39.704,103.909 C45.768,104.334 48.961,110.132 48.961,110.132 C54.347,119.364 63.088,116.695 66.534,115.152 C67.076,111.25 68.641,108.584 70.368,107.077 C56.955,105.55 42.855,100.372 42.855,77.233 C42.855,70.64 45.214,65.253 49.077,61.024 C48.45,59.502 46.383,53.361 49.662,45.043 C49.662,45.043 54.733,43.42 66.273,51.233 C71.09,49.895 76.256,49.224 81.388,49.201 C86.52,49.224 91.69,49.895 96.516,51.233 C108.042,43.42 113.106,45.043 113.106,45.043 C116.393,53.361 114.325,59.502 113.698,61.024 C117.57,65.253 119.913,70.64 119.913,77.233 C119.913,100.427 105.786,105.534 92.339,107.029 C94.505,108.903 96.435,112.578 96.435,118.212 C96.435,126.291 96.365,132.794 96.365,134.784 C96.365,136.391 97.452,138.274 100.513,137.681 C124.494,129.687 141.775,107.059 141.775,80.387 C141.775,47.035 114.738,20 81.388,20 C48.041,20 21,47.035 21,80.387 Z" id="Fill-52"></path>
+                            <path d="M43.872,106.703 C43.739,107.004 43.267,107.093 42.837,106.887 C42.399,106.69 42.153,106.281 42.295,105.98 C42.425,105.671 42.898,105.586 43.335,105.791 C43.774,105.989 44.024,106.402 43.872,106.703" id="Fill-53"></path>
+                            <path d="M46.318,109.431 C46.03,109.698 45.467,109.574 45.085,109.152 C44.69,108.731 44.616,108.168 44.908,107.897 C45.205,107.63 45.751,107.755 46.147,108.176 C46.542,108.602 46.619,109.161 46.318,109.431" id="Fill-54"></path>
+                            <path d="M48.699,112.909 C48.329,113.166 47.724,112.925 47.35,112.388 C46.98,111.851 46.98,111.207 47.358,110.949 C47.733,110.691 48.329,110.923 48.708,111.456 C49.077,112.001 49.077,112.646 48.699,112.909" id="Fill-55"></path>
+                            <path d="M51.961,116.269 C51.63,116.634 50.925,116.536 50.409,116.038 C49.881,115.551 49.734,114.86 50.066,114.495 C50.401,114.129 51.11,114.232 51.63,114.726 C52.154,115.212 52.314,115.908 51.961,116.269" id="Fill-56"></path>
+                            <path d="M56.461,118.22 C56.315,118.693 55.636,118.908 54.952,118.707 C54.269,118.5 53.822,117.946 53.96,117.468 C54.102,116.992 54.784,116.768 55.473,116.983 C56.155,117.189 56.603,117.739 56.461,118.22" id="Fill-57"></path>
+                            <path d="M61.403,118.582 C61.42,119.08 60.84,119.493 60.122,119.501 C59.4,119.518 58.816,119.115 58.808,118.625 C58.808,118.122 59.375,117.713 60.097,117.701 C60.815,117.687 61.403,118.087 61.403,118.582" id="Fill-58"></path>
+                            <path d="M66.002,117.799 C66.088,118.285 65.589,118.784 64.876,118.916 C64.175,119.045 63.526,118.745 63.437,118.263 C63.35,117.765 63.858,117.266 64.558,117.137 C65.272,117.013 65.911,117.305 66.002,117.799" id="Fill-59"></path>
+                        </g>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="burger">
+        <div></div>
+    </div>
+    <div class="nav-side">
+        <ul>
+            <li><a href="index.html">Getting Started</a></li>
+            <li><a href="application.html">Application</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="session_lifecycle.html">Session Lifecycle</a></li>
+            <li><a href="monitoring.html">Monitoring</a></li>
+            <li><a href="configuration.html">Configuration</a></li>
+            <li><a href="performance_tuning.html">Performance</a></li>
+            <li><a href="open_source.html">Open Source</a></li>
+            <li><a href="pro_features.html">Pro Features</a></li>
+            <li><a href="support.html">Support</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container" role="main">
+    <div class="content-heading">
+        <h3>Configuration</h3>
+    </div>
+    <div class="content-body">
+
+        <h4 class="heading heading-primary">Session Container</h4>
+        <p>Configures the operation of the server as a whole.</p>
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Session Container Configuration Options</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td></td>
+                <td><strong>Directory (<code>String</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The working directory for the web-socket server. Monitoring files will be created in this
+                    directory
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>$TMP/babl-server</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.directory</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.serverDirectory</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Bind Address (<code>String</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The hostname or IP address that the server will listen on for inbound TCP connections</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>0.0.0.0</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.bind.address</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.bindAddress</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Listen Port (<code>String</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The port that the server will listen on for inbound TCP connections</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>8080</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.listen.port</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.listenPort</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Connection Backlog (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The maximum number of pending connections</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>20</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.connection.backlog</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.connectionBacklog</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Poll Mode Enabled (<code>boolean</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Enables poll-mode when the number of active sessions is below a configurable limit</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>false</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.poll.mode.enabled</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.pollModeEnabled</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Poll Mode Session Limit (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Receive sockets will be polled as part of the event-loop (rather than using <code>select()</code>)
+                    if the active session count is below or at this value
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>5</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.poll.mode.session.limit</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.pollModeSessionLimit</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Session Monitoring File Entry Count (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Sets the maximum number of sessions per monitoring file (monitoring files will be created as
+                    needed)
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>4096</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.session.monitoring.entry.count</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.sessionMonitoringFileEntryCount</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Session Poll Limit (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Sets the maximum number of sessions that will be ready for reading per invocation of the server
+                    event-loop
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>200</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.session.poll.limit</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.sessionPollLimit</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Active Session Limit (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Sets the maximum number of sessions for a given container</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>1000</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.active.session.limit</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.activeSessionLimit</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Connection Validator (<code>String</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Fully-qualified classname of an implementation of <code>ConnectionValidator</code></td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>AlwaysValidConnectionValidator</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.validation.validator</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.connectionValidator</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Validation Timeout Nanos (<code>long</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Sets the timeout for connections to be validated</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>10s</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.validation.timeout</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.validationTimeoutNanos</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Server Idle Strategy (<code>String</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Sets the idling strategy used in the Server event-loop. One of <code>BUSY_SPIN,YIELDING,BACK_OFF,SLEEPING</code>.
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>BUSY_SPIN</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.server.idle.strategy</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionContainerConfig.serverIdleStrategy</code></td>
+            </tr>
+            </tbody>
+        </table>
+        <h4 class="heading heading-primary">Session</h4>
+        <p>Configure per-session settings.</p>
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Session Configuration Options</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td></td>
+                <td><strong>Maximum Buffer Size (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The maximum size, in bytes that the session's send or receive buffer can grow to</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>32MB</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.session.buffer.max.size</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionConfig.maxBufferSize</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Receive Buffer Size (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The initial size, in bytes of the session's receive buffer (used for encoded web socket frames read
+                    from the network)
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>1KB</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.session.buffer.receive.size</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionConfig.receiveBufferSize</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Send Buffer Size (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The initial size, in bytes of the session's send buffer (used for web socket frames queued for
+                    writing to the network)
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>1KB</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.session.buffer.send.size</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionConfig.sendBufferSize</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Decode Buffer Size (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The initial size, in bytes of the session's decode buffer (used for assembling decoded web socket
+                    frames before delivery to the application)
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>1KB</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.session.buffer.decode.size</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionConfig.sessionDecodeBufferSize</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Decode Maximum Buffer Size (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The maximum size, in bytes of the session's decode buffer (used for assembling decoded web socket
+                    frames before delivery to the application)
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>128KB</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.session.buffer.decode.max.size</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionConfig.sessionDecodeBufferMaxSize</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Maximum Web Socket Frame Length (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The maximum length, in bytes of the largest acceptable web socket frame</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>64KB</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.session.frame.max.size</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionConfig.maxWebSocketFrameLength</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Ping Send Interval (<code>long</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The time, in nanoseconds that an idle session will wait before sending a <code>PING</code> frame to
+                    its peer
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>5s</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.session.ping.interval</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionConfig.pingIntervalNanos</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Pong Response Timeout (<code>long</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The time, in nanoseconds that a session will wait before a <code>PONG</code> response before closing
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>30s</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.session.pong.response.timeout</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SessionConfig.pongResponseTimeoutNanos</code></td>
+            </tr>
+            </tbody>
+        </table>
+        <h4 class="heading heading-primary">Socket</h4>
+        <p>Configures network socket settings.</p>
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Socket Configuration Options</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td></td>
+                <td><strong>Send Buffer Size (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The size, in bytes of the session's socket send buffer (<code>SO_SND_BUF</code>)</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>64KB</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.socket.send.buffer.size</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SocketConfig.sendBufferSize</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Receive Buffer Size (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The size, in bytes of the session's socket receive buffer (<code>SO_RCV_BUF</code>)</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>64KB</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.socket.receive.buffer.size</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SocketConfig.receiveBufferSize</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>TCP No Delay Enabled (<code>boolean</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Indicates whether Nagle's Algorithm should be disabled (<code>SO_TCP_NODELAY</code>)</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>false</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.socket.tcpNoDelay.enabled</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>SocketConfig.tcpNoDelay</code></td>
+            </tr>
+            </tbody>
+        </table>
+        <h4 class="heading heading-primary">Proxy</h4>
+        <p>Configures the operation of the IPC transport between the session container and the application.</p>
+        <p>Only used when server deployment mode is <code>DETACHED</code>.</p>
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Proxy Configuration Options</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td></td>
+                <td><strong>Server Adapter Poll Fragment Limit (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The maximum number of fragments processed by the server adapter for a single <code>poll</code> call
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>50</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.proxy.server.adapter.poll.limit</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>ProxyConfig.serverAdapterPollFragmentLimit</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Application Adapter Poll Fragment Limit (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The maximum number of fragments processed by the application adapter for a single <code>poll</code>
+                    call
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>40</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.proxy.application.adapter.poll.limit</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>ProxyConfig.applicationAdapterPollFragmentLimit</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Server Stream Base ID (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The starting stream ID for server instances</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>6000</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.proxy.server.stream.base.id</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>ProxyConfig.serverStreamBaseId</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Application Stream Base ID (<code>int</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The starting stream ID for application instances</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>5000</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.proxy.application.stream.base.id</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>ProxyConfig.applicationStreamBaseId</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Launch Media Driver (<code>boolean</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Indicates whether an Aeron MediaDriver should be launched for use by proxies</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>false</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.proxy.driver.launch</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>ProxyConfig.launchMediaDriver</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Media Driver Directory (<code>String</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Indicates where the MediaDriver should be launched</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>${java.io.tmpdir}/proxy-driver</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.proxy.driver.dir</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>ProxyConfig.mediaDriverDir</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Performance Mode (<code>String</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>Configures the performance level of the launched MediaDriver</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>PerformanceMode.HIGH</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.performance.mode</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>PerformanceConfig.performanceMode</code></td>
+            </tr>
+            </tbody>
+        </table>
+        <h4 class="heading heading-primary">JVM Settings</h4>
+        <p>For best performance, set the following system properties:</p>
+        <ul class="list list-primary">
+            <li><code>-Djava.lang.Integer.IntegerCache.high=65536</code></li>
+            <li><code>-Djava.net.preferIPv4Stack=true</code></li>
+            <li><code>-XX:+UnlockExperimentalVMOptions -XX:+TrustFinalNonStaticFields</code></li>
+            <li><code>-XX:BiasedLockingStartupDelay=0</code></li>
+        </ul>
+
+
+    </div>
+</div>
+    <script rel="javascript" src="assets/js/babl.js"></script>
+</body>
+</html>

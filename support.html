@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Babl Low-Latency WebSocket Server - Index</title>
+    <title>Babl Low-Latency WebSocket Server - Support</title>
     <link rel="stylesheet" type="text/css" href="assets/style/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Babl Low Latency Java Websocket Server is a high performance solution for real-time web messaging.">
@@ -75,59 +75,24 @@
 
 <div class="container" role="main">
     <div class="content-heading">
-        <h3>Getting Started</h3>
+        <h3>Support</h3>
     </div>
     <div class="content-body">
         <p>
-            <strong>Babl</strong> is a high-performance, scalable web-socket server designed for use in low-latency applications.<br/><br/>
-            Built from the ground up to provide blazing fast execution speeds, and featuring a novel auto-scaling
-            mechanism, <strong>Babl</strong> will comfortably handle high throughput, large session-count workloads without slowing down.<br/><br/>
-            Using an event-driven reactive programming model, your application code is executed in an allocation-free,
-            lock-free event-loop for maximum efficiency and mechanical sympathy.<br/><br/>
-            <strong>Babl</strong> is particularly well suited to financial or crypto-currency exchanges, where clients may be connecting
-            to APIs using their own web-socket clients and latency is a key differentiator.
+            <strong>Babl</strong> is and always will be an open-source project, providing a high-performance web-socket server.
+        </p>
+        <p>
+            Professional support for the software can be provided for enterprise users.
+        </p>
+        <p>
+            Professional features such as load-balancing, enhanced monitoring, and integration with industry-standard metrics backends is available
+            to supported customers, or can be licensed separately if support is not required.
+        </p>
+        <p>
+            If you would like to find out more about support levels and pricing, or licensing costs for
+            professional features, please contact <a href="mailto:babl@aitusoftware.com">babl@aitusoftware.com</a>.
         </p>
 
-        <h4 class="heading heading-primary">Your Application</h4>
-        <p>
-            <strong>Babl</strong> is a container for your application, providing a high-performance proxy for web-socket connections.<br/><br/>
-            Your application will be notified of connection lifecycle events
-            (<code>onConnect</code>, <code>onDisconnect</code>),
-            and receive messages (<code>onMessage</code>) from client connections.<br/><br/>
-            Your application will publish responses to inbound messages, which will be sent back to the client.<br/><br/>
-            For more information, see <a href="application.html">Application</a>.
-        </p>
-        <h4 class="heading heading-primary">Using Babl</h4>
-
-        <h5>Docker</h5>
-        <p>
-            <strong>Babl</strong> is packaged in a docker container for ease of deployment.
-            The base container is tagged as <code>babl:0.5.0</code>
-            (or <code>babl:latest</code> for the latest released image), and should be extended with your own container definition:
-        </p>
-        <pre>FROM babl:latest
-
-COPY my-app/build/lib/ /babl/lib/
-COPY my-app/build/config/my-app.properties /babl/config
-ENV BABL_CONFIG_FILE="/babl/config/my-app.properties"
-ENV JVM_RUNTIME_PARAMETERS="-Dbabl.debug.enabled=true"</pre>
-        <p>
-            The project source code contains an
-            <a href="https://github.com/babl-ws/babl/blob/master/docker/docker-compose.yaml" target="_blank">example docker-compose</a> file.
-            This can be used to connect a simple echo application, with HTML resources hosted by an nginx instance.
-        </p>
-
-        <h5>Standalone</h5>
-        <p>
-            <strong>Babl</strong> can also be used in a standalone manner.
-            Simply download the <em>-all</em> variant of the JAR from the releases page, and execute the following:
-        </p>
-        <pre>$ java -jar /path/to/babl-all-0.5.0.jar /path/to/config.properties</pre>
-
-        <p>
-            Note that there is no legacy HTTP server functionality, so any HTML resources will need to be hosted using a suitable technology.
-            For more information on configuration, see <a href="configuration.html">Configuration</a>.
-        </p>
     </div>
 </div>
     <script rel="javascript" src="assets/js/babl.js"></script>

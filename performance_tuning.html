@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Babl Low-Latency WebSocket Server - Index</title>
+    <title>Babl Low-Latency WebSocket Server - Performance tuning</title>
     <link rel="stylesheet" type="text/css" href="assets/style/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Babl Low Latency Java Websocket Server is a high performance solution for real-time web messaging.">
@@ -75,58 +75,102 @@
 
 <div class="container" role="main">
     <div class="content-heading">
-        <h3>Getting Started</h3>
+        <h3>Performance Tuning</h3>
     </div>
     <div class="content-body">
         <p>
-            <strong>Babl</strong> is a high-performance, scalable web-socket server designed for use in low-latency applications.<br/><br/>
-            Built from the ground up to provide blazing fast execution speeds, and featuring a novel auto-scaling
-            mechanism, <strong>Babl</strong> will comfortably handle high throughput, large session-count workloads without slowing down.<br/><br/>
-            Using an event-driven reactive programming model, your application code is executed in an allocation-free,
-            lock-free event-loop for maximum efficiency and mechanical sympathy.<br/><br/>
-            <strong>Babl</strong> is particularly well suited to financial or crypto-currency exchanges, where clients may be connecting
-            to APIs using their own web-socket clients and latency is a key differentiator.
+            This page describes settings that can be applied to increase the performance of <strong>Babl</strong> server.<br/><br/>
+            <em>To ensure that these settings have a useful effect, it is important to measure performance against a
+                baseline without the settings enabled.</em><br/><br/>
+            Configuration items below can either be set on the command-line, or included in the config file passed to the
+            BablServer program (in this case, without their <code>-D</code> prefix).
+
+        </p>
+        <h4 class="heading heading-primary">JVM Arguments</h4>
+        <h5>Disable Buffer Bounds Checking</h5>
+        <p>
+            When rigorous testing has been completed, and an application has been deployed to production,
+            buffer bounds-checking can be disabled for an extra performance boost.<br/>
+            Performance gain is likely to be a few percent. Any advantage should be measured against the possible downsides.
+            For example, an incorrect buffer read in the application will cause a segmentation fault and program crash.<br/><br/>
+            Disable bounds-checking with this JVM parameter:
+        </p>
+        <p>
+            <code>-Dagrona.disable.bounds.checks=true</code>
         </p>
 
-        <h4 class="heading heading-primary">Your Application</h4>
-        <p>
-            <strong>Babl</strong> is a container for your application, providing a high-performance proxy for web-socket connections.<br/><br/>
-            Your application will be notified of connection lifecycle events
-            (<code>onConnect</code>, <code>onDisconnect</code>),
-            and receive messages (<code>onMessage</code>) from client connections.<br/><br/>
-            Your application will publish responses to inbound messages, which will be sent back to the client.<br/><br/>
-            For more information, see <a href="application.html">Application</a>.
-        </p>
-        <h4 class="heading heading-primary">Using Babl</h4>
 
-        <h5>Docker</h5>
+        <h5>Cache Integer Objects</h5>
         <p>
-            <strong>Babl</strong> is packaged in a docker container for ease of deployment.
-            The base container is tagged as <code>babl:0.5.0</code>
-            (or <code>babl:latest</code> for the latest released image), and should be extended with your own container definition:
+            In the Java IO libraries, <code>java.lang.Integer</code> variables are used to represent file-descriptors.
+            Depending on how many sockets are created on the system in use, the value presented below may
+            need to be increased to reduce allocation.<br/><br/>
+            Cache a fixed number of java.lang.Integer values with this JVM parameter:
         </p>
-        <pre>FROM babl:latest
-
-COPY my-app/build/lib/ /babl/lib/
-COPY my-app/build/config/my-app.properties /babl/config
-ENV BABL_CONFIG_FILE="/babl/config/my-app.properties"
-ENV JVM_RUNTIME_PARAMETERS="-Dbabl.debug.enabled=true"</pre>
         <p>
-            The project source code contains an
-            <a href="https://github.com/babl-ws/babl/blob/master/docker/docker-compose.yaml" target="_blank">example docker-compose</a> file.
-            This can be used to connect a simple echo application, with HTML resources hosted by an nginx instance.
+            <code>-Djava.lang.Integer.IntegerCache.high=65536</code>
         </p>
 
-        <h5>Standalone</h5>
-        <p>
-            <strong>Babl</strong> can also be used in a standalone manner.
-            Simply download the <em>-all</em> variant of the JAR from the releases page, and execute the following:
-        </p>
-        <pre>$ java -jar /path/to/babl-all-0.5.0.jar /path/to/config.properties</pre>
 
+        <h5>Prefer IPv4 Network Stack</h5>
         <p>
-            Note that there is no legacy HTTP server functionality, so any HTML resources will need to be hosted using a suitable technology.
-            For more information on configuration, see <a href="configuration.html">Configuration</a>.
+            A hint to the JVM that it should not default to using IPv6 even when the system supports it.<br/><br/>
+            Enable with this JVM parameter:
+        </p>
+        <p>
+            <code>-Djava.net.preferIPv4Stack=true</code>
+        </p>
+
+
+        <h5>Trust Non-Static Final Fields</h5>
+        <p>
+            A hint to the JIT compiler that final fields can be trusted as final (i.e. subject to certain optimisations).<br/><br/>
+            Enable with these JVM parameters:
+        </p>
+        <p>
+            <code>-XX:+UnlockExperimentalVMOptions -XX:+TrustFinalNonStaticFields</code>
+        </p>
+
+
+        <h5>Immediate Biased Locking</h5>
+        <p>
+            Perform biased locking immediately. Older JVMs wait several seconds before attempting to bias locks.
+            Since <strong>Babl</strong> is inherently single-threaded when dealing with synchronized objects (e.g. java.nio.SocketChannel),
+            lock biasing should be performed at start-up.<br/><br/>
+            This setting may have a negligible effect on JDK9+, where intrinsic locks have been replaced with
+            <code>java.util.concurrent.ReentrantLock</code> instances in the <code>java.nio</code> socket components.<br/><br/>
+            Enable with this JVM parameter:
+        </p>
+        <p>
+            <code>-XX:BiasedLockingStartupDelay=0</code>
+        </p>
+
+        <h4 class="heading heading-primary">Babl Configuration</h4>
+        <h5>Disable Nagle's Algorithm</h5>
+        <p>
+            Setting this flag will tell the operating system to send TCP packets as soon as they are queued, rather than waiting for more data to improve batching.
+        </p>
+        <p>
+            <code>-Dbabl.socket.tcpNoDelay.enabled=true</code>
+        </p>
+
+
+        <h5>Use Busy-spin in Server Event-loop</h5>
+        <p>
+            Setting this property configures a busy-spin wait-loop when processing the Server event-loop.<br/>
+            This will reduce latency between the session container and the application, at the expense of higher CPU usage.
+        </p>
+        <p>
+            <code>-Dbabl.server.idle.strategy=BUSY_SPIN</code>
+        </p>
+
+        <h5>Use Busy-spin in Application Event-loop</h5>
+        <p>
+            Setting this property configures a busy-spin wait-loop when communicating with the IPC transport.<br/>
+            This will reduce latency, at the expense of higher CPU usage.
+        </p>
+        <p>
+            <code>-Dbabl.proxy.performance.mode=HIGH</code>
         </p>
     </div>
 </div>

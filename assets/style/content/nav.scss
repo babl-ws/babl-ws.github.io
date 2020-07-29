@@ -1,0 +1,141 @@
+.nav{
+	ul{
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		li{
+			width: auto;
+			display: inline-block;
+		}
+	}
+	&-top{
+		position: fixed;
+		z-index: 10;
+		background: $near-grey-2;
+		width: 95%;
+		height: 80px;
+		padding: 0px 2.5%;
+		ul{
+			li{
+				&.logo{
+					margin-top: 10px;
+					line-height: 60px;
+				}
+				float: right;
+				&:first-child{
+					float: left;
+				}
+				svg{
+					margin-top: 10px;
+					width: 60px;
+					height: 60px;
+					g{
+						fill: $primary-dark;
+					}
+					&:hover{
+						g{
+							fill: $primary;
+						}
+					}
+				}
+			}
+		}
+	}
+	&-side{
+		position: fixed;
+		z-index: 9;
+		top: 0;
+		width: 260px;
+		padding: 80px 0px 10px 0px;
+		background-color: $near-grey-1;
+		height: 100%;
+		left: -260px;
+		transition: 300ms ease-in-out;
+		&.slide-out{
+			left: 0;
+		}
+		ul{
+			margin: 0;
+			padding: 0;
+			li{
+				width: 100%;
+				background: linear-gradient(to right, $primary-dark 0%, $primary 49.999%, $near-grey-1 50%, $near-grey-1 100%);
+				background-size: 300%;
+				background-position: 100%;
+				background-repeat: no-repeat;
+				box-sizing: border-box;
+			    -moz-box-sizing: border-box;
+			    -webkit-box-sizing: border-box;
+				border-left: 5px solid transparent;
+				transition: 300ms ease-out;
+				color: $grey-3;
+				position: relative;
+				a{
+					width: 83%;
+					padding: 20px 5% 20px 10%;
+					cursor: pointer;
+					display: block;
+				}
+				&.active{
+					border-color: $primary;
+				}
+				&:hover{
+					background-position: 10%;
+					color: $white;
+					border-color: transparent;
+				}
+			}
+		}
+	}
+}
+
+.burger{
+	height: 50px;
+	width: 30px;
+	position: fixed;
+	top: 104px;
+	left: 15px;
+	z-index: 9;
+	transition: 300ms ease-in-out;
+	cursor: pointer;
+	div{
+		background-color: $grey-2;
+		height: 5px;
+		width: 25px;
+		transition: all 200ms linear;
+		position: relative;
+		&::before{
+			height: 5px;
+			width: 25px;
+			background-color: $grey-2;
+			transition: all 200ms linear;
+			content: "";
+			position: absolute;
+			left: 0px;
+			top: 12px;
+		}
+		&::after{
+			height: 5px;
+			width: 25px;
+			background-color: $grey-2;
+			transition-delay: 20ms;
+			transition: all 200ms linear;
+			content: "";
+			position: absolute;
+			left: 0px;
+			top: 24px;
+	  	}
+	}
+	&.slide-out{
+		left: 275px;
+	}
+}
+.slide-out-half{
+	margin-left: 150px;
+}
+
+@media screen and (max-width: 1000px){
+	.burger{
+		left: 5px;
+	}
+}

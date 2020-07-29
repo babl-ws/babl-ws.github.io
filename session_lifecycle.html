@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Babl Low-Latency WebSocket Server - Index</title>
+    <title>Babl Low-Latency WebSocket Server - Session lifecycle</title>
     <link rel="stylesheet" type="text/css" href="assets/style/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Babl Low Latency Java Websocket Server is a high performance solution for real-time web messaging.">
@@ -75,58 +75,86 @@
 
 <div class="container" role="main">
     <div class="content-heading">
-        <h3>Getting Started</h3>
+        <h3>Session Lifecycle</h3>
     </div>
     <div class="content-body">
         <p>
-            <strong>Babl</strong> is a high-performance, scalable web-socket server designed for use in low-latency applications.<br/><br/>
-            Built from the ground up to provide blazing fast execution speeds, and featuring a novel auto-scaling
-            mechanism, <strong>Babl</strong> will comfortably handle high throughput, large session-count workloads without slowing down.<br/><br/>
-            Using an event-driven reactive programming model, your application code is executed in an allocation-free,
-            lock-free event-loop for maximum efficiency and mechanical sympathy.<br/><br/>
-            <strong>Babl</strong> is particularly well suited to financial or crypto-currency exchanges, where clients may be connecting
-            to APIs using their own web-socket clients and latency is a key differentiator.
+            When a new socket connection is made, a Session will step through several states.
         </p>
 
-        <h4 class="heading heading-primary">Your Application</h4>
+        <h4 class="heading heading-primary">UPGRADING</h4>
         <p>
-            <strong>Babl</strong> is a container for your application, providing a high-performance proxy for web-socket connections.<br/><br/>
-            Your application will be notified of connection lifecycle events
-            (<code>onConnect</code>, <code>onDisconnect</code>),
-            and receive messages (<code>onMessage</code>) from client connections.<br/><br/>
-            Your application will publish responses to inbound messages, which will be sent back to the client.<br/><br/>
-            For more information, see <a href="application.html">Application</a>.
+            The <code>Connection: Upgrade</code> directive is processed, and the initial HTTP connection will
+            be upgraded to the web-socket protocol.
         </p>
-        <h4 class="heading heading-primary">Using Babl</h4>
-
-        <h5>Docker</h5>
+        <h4 class="heading heading-primary">VALIDATING</h4>
         <p>
-            <strong>Babl</strong> is packaged in a docker container for ease of deployment.
-            The base container is tagged as <code>babl:0.5.0</code>
-            (or <code>babl:latest</code> for the latest released image), and should be extended with your own container definition:
+            Once the connection has been upgraded, but before the application is notified of the new session,
+            the session must be validated. <strong>Babl</strong> allows a user-defined strategy to perform validation
+            (for example an authentication operation).<br/><br/>
+            As part of the validation step, all HTTP request headers are propagated from the connection upgrade request.
+            To use custom validation, implement the <code>ConnectionValidator</code> interface:
         </p>
-        <pre>FROM babl:latest
-
-COPY my-app/build/lib/ /babl/lib/
-COPY my-app/build/config/my-app.properties /babl/config
-ENV BABL_CONFIG_FILE="/babl/config/my-app.properties"
-ENV JVM_RUNTIME_PARAMETERS="-Dbabl.debug.enabled=true"</pre>
+        <pre class="hljs" style="display: block; overflow-x: auto; padding: 0.5em; background: rgb(240, 240, 240) none repeat scroll 0% 0%; color: rgb(68, 68, 68);"><span class="hljs-keyword" style="font-weight: 700;">public</span> <span class="hljs-class"><span class="hljs-keyword" style="font-weight: 700;">interface</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">ConnectionValidator</span>
+</span>{
+    <span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">void</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">validateConnection</span><span class="hljs-params">(
+        ValidationResult validationResult,
+        Consumer&lt;BiConsumer&lt;CharSequence, CharSequence&gt;&gt; headerProvider,
+        ValidationResultPublisher validationResultPublisher)</span></span>;
+}
+        </pre>
         <p>
-            The project source code contains an
-            <a href="https://github.com/babl-ws/babl/blob/master/docker/docker-compose.yaml" target="_blank">example docker-compose</a> file.
-            This can be used to connect a simple echo application, with HTML resources hosted by an nginx instance.
+            The validation will be invoked on the event-loop thread, so it is vital that any implementation
+            of this interface <em>does not block</em>.<br/><br/>
+            The recommended approach is to copy the supplied parameters to a queue, and perform the validation
+            work on a separate thread.<br/><br/>
+            Validator implementations must respect the following:
+        </p>
+        <ul class="list list-primary">
+            <li>The headers are provided as <code>CharSequence</code> objects to avoid allocation - references to these objects must not be retained</li>
+            <li>The <code>ValidationResult</code> should be mutated to indicate whether validation of the connection was successful - references to this object must not be retained</li>
+            <li>The <code>ValidationResultPublisher</code> is a thread-safe sink for the mutated <code>ValidationResult</code></li>
+        </ul>
+        <h5>Publishing the validation result</h5>
+        <p>
+            Validation is either successful:
+        </p>
+        <pre class="hljs" style="display: block; overflow-x: auto; padding: 0.5em; background: rgb(240, 240, 240) none repeat scroll 0% 0%; color: rgb(68, 68, 68);"><span class="hljs-selector-tag" style="font-weight: 700;">public</span> <span class="hljs-selector-tag" style="font-weight: 700;">void</span> <span class="hljs-selector-tag" style="font-weight: 700;">validateConnection</span>(...) {
+    validationResult<span class="hljs-selector-class" style="color: rgb(136, 0, 0);">.validationSuccess</span>();
+    <span class="hljs-selector-tag" style="font-weight: 700;">while</span> (!validationResultPublisher.publishResult(validationResult)) {
+        <span class="hljs-comment" style="color: rgb(136, 136, 136);">// result queue full, need to retry after a short wait</span>
+    }
+}</pre>
+        <p>
+            or unsuccessful:
+        </p>
+        <pre class="hljs" style="display: block; overflow-x: auto; padding: 0.5em; background: rgb(240, 240, 240) none repeat scroll 0% 0%; color: rgb(68, 68, 68);"><span class="hljs-comment" style="color: rgb(136, 136, 136);">// Valid user codes are 4000-4999</span>
+<span class="hljs-keyword" style="font-weight: 700;">static</span> <span class="hljs-keyword" style="font-weight: 700;">final</span> <span class="hljs-keyword" style="font-weight: 700;">short</span> AUTHENTICATION_FAILED = <span class="hljs-number" style="color: rgb(136, 0, 0);">4007</span>;
+
+<span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">public</span> <span class="hljs-keyword" style="font-weight: 700;">void</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">validateConnection</span><span class="hljs-params">(...)</span> </span>{
+    validationResult.validationFailure(AUTHENTICATION_FAILED);
+    <span class="hljs-keyword" style="font-weight: 700;">while</span> (!validationResultPublisher.publishResult(validationResult)) {
+        <span class="hljs-comment" style="color: rgb(136, 136, 136);">// result queue full, need to retry after a short wait</span>
+    }
+}</pre>
+        <p>
+            On validation success, the session will transition to the <code>CONNECTED</code> state and the application will be notified.<br/><br/>
+            On validation failure, the connection will be closed.<br/><br/>
+            The result code passed to <code>validationFailure</code> will be propagated to the web-socket client as the close reason.
+        </p>
+        <h4 class="heading heading-primary">CONNECTED</h4>
+        <p>
+            Normal operation, web-socket messages will be passed to the application as they are received.<br/><br/>
+            Messages sent to the Session will be framed and transmitted to the remote peer.
         </p>
 
-        <h5>Standalone</h5>
+        <h4 class="heading heading-primary">CLOSING</h4>
         <p>
-            <strong>Babl</strong> can also be used in a standalone manner.
-            Simply download the <em>-all</em> variant of the JAR from the releases page, and execute the following:
+            Close has been requested by the application or the session container. The close frame will be sent to the remote peer.
         </p>
-        <pre>$ java -jar /path/to/babl-all-0.5.0.jar /path/to/config.properties</pre>
-
+        <h4 class="heading heading-primary">DISCONNECTED</h4>
         <p>
-            Note that there is no legacy HTTP server functionality, so any HTML resources will need to be hosted using a suitable technology.
-            For more information on configuration, see <a href="configuration.html">Configuration</a>.
+            The session is no longer connected.
         </p>
     </div>
 </div>
