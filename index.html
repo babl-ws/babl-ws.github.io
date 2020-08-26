@@ -98,11 +98,17 @@
             For more information, see <a href="application.html">Application</a>.
         </p>
         <h4 class="heading heading-primary">Using Babl</h4>
-
+        <h5>Development Mode</h5>
+        <p>
+            <strong>Babl</strong> will start in high-performance mode by default, but this can use significant
+            system resources. For development purposes, use the config properties, or a system property to set
+            <code>babl.performance.mode=DEVELOPMENT</code>.<br/><br/>
+            This will cause the server to run in a single thread using a conservative idle strategy.
+        </p>
         <h5>Docker</h5>
         <p>
             <strong>Babl</strong> is packaged in a docker container for ease of deployment.
-            The base container is tagged as <code>babl:0.5.0</code>
+            The base container is tagged as <code>babl:0.6.0</code>
             (or <code>babl:latest</code> for the latest released image), and should be extended with your own container definition:
         </p>
         <pre>FROM babl:latest
@@ -122,7 +128,7 @@ ENV JVM_RUNTIME_PARAMETERS="-Dbabl.debug.enabled=true"</pre>
             <strong>Babl</strong> can also be used in a standalone manner.
             Simply download the <em>-all</em> variant of the JAR from the releases page, and execute the following:
         </p>
-        <pre>$ java -jar /path/to/babl-all-0.5.0.jar /path/to/config.properties</pre>
+        <pre>$ java -jar /path/to/babl-all-0.6.0.jar /path/to/config.properties</pre>
 
         <p>
             Note that there is no legacy HTTP server functionality, so any HTML resources will need to be hosted using a suitable technology.
