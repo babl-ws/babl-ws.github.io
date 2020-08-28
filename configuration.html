@@ -79,6 +79,66 @@
     </div>
     <div class="content-body">
 
+
+        <h4 class="heading heading-primary">Application</h4>
+        <p>Configures the operation of the application container.</p>
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Application Container Configuration Options</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td></td>
+                <td><strong>Class Name (<code>String</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The class name of an <code>Application</code> that will be constructed upon start-up</td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>N/A</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.application.class.name</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>ApplicationConfig.applicationClassname</code></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Idle Strategy (<code>String</code>)</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Description</strong></td>
+                <td>The name of the idle strategy to use when the server is
+                    launched in <code>DETACHED</code> mode
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Default</strong></td>
+                <td><code>BUSY_SPIN</code></td>
+            </tr>
+            <tr>
+                <td><strong>Property</strong></td>
+                <td><code>babl.application.idle.strategy</code></td>
+            </tr>
+            <tr>
+                <td><strong>API</strong></td>
+                <td><code>ApplicationConfig.applicationIdleStrategy</code></td>
+            </tr>
+            </tbody>
+        </table>
+
         <h4 class="heading heading-primary">Session Container</h4>
         <p>Configures the operation of the server as a whole.</p>
         <table>
