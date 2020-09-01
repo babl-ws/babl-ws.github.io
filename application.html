@@ -125,6 +125,12 @@
         <span class="hljs-keyword" style="font-weight: 700;">int</span> length)</span></span>;
 }
         </pre>
+        <p>
+            Applications <strong>may</strong> maintain a reference to a <code>Session</code> object
+            between connected and disconnected events.<br/><br/>
+            Applications <strong>must not</strong> invoke any method on a <code>Session</code> object
+            from a thread other than the application thread.
+        </p>
 
         <h5>The Echo Application</h5>
         <p>
@@ -177,6 +183,22 @@
     }
 }
         </pre>
+        <h4 class="heading heading-primary">Application Work</h4>
+        <p>
+            When it is necessary to perform extra work on the application thread
+            (e.g. polling an external message transport), this can be configured by
+            supplying an extra <code>Agent</code> to the application configuration:
+        </p>
+        <pre class="hljs" style="display: block; overflow-x: auto; padding: 0.5em; background: rgb(240, 240, 240) none repeat scroll 0% 0%; color: rgb(68, 68, 68);"><span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">private</span> <span class="hljs-keyword" style="font-weight: 700;">void</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">configureApplication</span><span class="hljs-params">(<span class="hljs-keyword" style="font-weight: 700;">final</span> BablConfig bablConfig)</span>
+</span>{
+    <span class="hljs-keyword" style="font-weight: 700;">final</span> Agent pollingAgent = createPollingAgent();
+    bablConfig.applicationConfig().additionalWork(pollingAgent);
+}
+</pre>
+        <p>
+            The additional <code>Agent</code> will be invoked on each duty-cycle, after the
+            application.
+        </p>
     </div>
 </div>
     <script rel="javascript" src="assets/js/babl.js"></script>
