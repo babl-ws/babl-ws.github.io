@@ -5,6 +5,10 @@
     </url>
 
     <url>
+        <loc>https://babl.ws/getting_started.html</loc>
+    </url>
+
+    <url>
         <loc>https://babl.ws/application.html</loc>
     </url>
 
@@ -20,11 +24,7 @@
         <loc>https://babl.ws/index.html/</loc>
     </url>
 
-    <url>
-        <loc>https://babl.ws/javadocs/</loc>
-    </url>
-
-    <url>
+   <url>
         <loc>https://babl.ws/session_lifecycle.html</loc>
     </url>
 

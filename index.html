@@ -77,9 +77,6 @@
 </div>
 
 <div class="container" role="main">
-    <div class="content-heading">
-        <h3>Getting Started</h3>
-    </div>
     <div class="content-body">
         <p>
             <strong>Babl</strong> is a high-performance, scalable web-socket server designed for use in low-latency applications.<br/><br/>
@@ -100,71 +97,30 @@
             Your application will publish responses to inbound messages, which will be sent back to the client.<br/><br/>
             For more information, see <a href="application.html">Application</a>.
         </p>
-        <h4 class="heading heading-primary">Using Babl</h4>
-        <h5>Development Mode</h5>
+        <h4 class="heading heading-primary">Use case: Market Data Distributor</h4>
+        <img src="assets/img/market_data_distributor.png" alt="Babl Server as Market Data Distributor" title="Babl Server as Market Data Distributor" class="image-large"/>
         <p>
-            <strong>Babl</strong> will start in high-performance mode by default, but this can use significant
-            system resources. For development purposes, use the config properties, or a system property to set
-            <code>babl.performance.mode=DEVELOPMENT</code>.<br/><br/>
-            This will cause the server to run in a single thread using a conservative idle strategy.
-        </p>
-        <h5>
-            Library
-        </h5>
-        <p>
-            <strong>Babl</strong> is available on
-            <a href="https://mvnrepository.com/artifact/com.aitusoftware/babl" target="_blank">Maven Central</a>.
-            Used as a project dependency, the server can be launched like so:
-        </p>
-        <pre class="hljs" style="display: block; overflow-x: auto; padding: 0.5em; background: rgb(240, 240, 240) none repeat scroll 0% 0%; color: rgb(68, 68, 68);"><span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">private</span> <span class="hljs-keyword" style="font-weight: 700;">static</span> <span class="hljs-keyword" style="font-weight: 700;">void</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">launchBabl</span><span class="hljs-params">()</span>
-</span>{
-    BablServer.main(<span class="hljs-keyword" style="font-weight: 700;">new</span> String[] {<span class="hljs-string" style="color: rgb(136, 0, 0);">"/path/to/config.properties"</span>});
-}</pre>
-        <p>
-            Or programmatically:
-        </p>
-        <pre class="hljs" style="display: block; overflow-x: auto; padding: 0.5em; background: rgb(240, 240, 240) none repeat scroll 0% 0%; color: rgb(68, 68, 68);"><span class="hljs-keyword" style="font-weight: 700;">private</span> <span class="hljs-keyword" style="font-weight: 700;">void</span> launchBabl()
-{
-    final BablConfig <span class="hljs-built_in" style="color: rgb(57, 115, 0);">config</span> = PropertiesLoader
-        .configure(Paths.<span class="hljs-built_in" style="color: rgb(57, 115, 0);">get</span>(<span class="hljs-string" style="color: rgb(136, 0, 0);">"/path/to/config.properties"</span>));
-    <span class="hljs-built_in" style="color: rgb(57, 115, 0);">config</span>.applicationConfig().application(<span class="hljs-keyword" style="font-weight: 700;">new</span> MyApplication());
-    <span class="hljs-built_in" style="color: rgb(57, 115, 0);">try</span> (SessionContainers containers = BablServer.launch(<span class="hljs-built_in" style="color: rgb(57, 115, 0);">config</span>))
-    {
-        containers.start();
-        <span class="hljs-keyword" style="font-weight: 700;">new</span> ShutdownSignalBarrier().await();
-    }
-}
-</pre>
-        <h5>Docker</h5>
-        <p>
-            <strong>Babl</strong> is packaged in a docker container for ease of deployment.
-            The base container is tagged as <code>babl:0.7.0</code>,
-            and should be extended with your own container definition:
-        </p>
-        <pre>FROM babl:0.7.0
-
-COPY my-app/build/lib/ /babl/lib/
-COPY my-app/build/config/my-app.properties /babl/config
-ENV BABL_CONFIG_FILE="/babl/config/my-app.properties"
-ENV JVM_RUNTIME_PARAMETERS="-Dbabl.debug.enabled=true"</pre>
-        <p>
-            The project source code contains an
-            <a href="https://github.com/babl-ws/babl/blob/master/docker/docker-compose.yaml" target="_blank">example docker-compose</a> file.
-            This can be used to connect a simple echo application, with HTML resources hosted by an nginx instance.
-        </p>
-        <h5>Standalone</h5>
-        <p>
-            <strong>Babl</strong> can also be used in a standalone manner.
-            Simply build the project, and use the <em>-all</em> variant of the JAR from the <code>build/dist</code> directory:
-        </p>
-        <pre>$ java -jar /path/to/babl-all-0.7.0.jar /path/to/config.properties</pre>
-
-        <p>
-            Note that there is no legacy HTTP server functionality, so any HTML resources will need to be hosted using a suitable technology.
-            See the <a href="https://github.com/babl-ws/babl/blob/master/docker/docker-compose.yaml" target="_blank">Docker Compose</a> example.
+            In this example, an exchange publishes market data over an IP multicast network to multiple instances
+            of Babl Server. Each instance contains a single Application (containing business logic such
+            as market data subscriptions), and multiple Session Containers.<br/><br/>
+            The Application publishes market data updates to the Sessions via a local IPC bus,
+            where they are distributed to the trading algos or other clients over TCP using the
+            web socket protocol.
         </p>
         <p>
-            For more information on configuration, see <a href="configuration.html">Configuration</a>.
+            This architecture allows the number of server instances to be scaled horizontally as
+            demand grows. Multi-core machines can also be utilised to run several Session Containers
+            per server, making efficient use of available CPU cores without the overhead of
+            contention.
+        </p>
+        <p>
+            Babl can encode over <strong>40 million frames per second</strong>, per Session Container.
+            <br/><br/>
+            The garbage-free design means that in-server latency should be less than 100 microseconds
+            at the 99th percentile.
+        </p>
+        <p>
+            See the <a href="getting_started.html">Getting Started</a> guide for more information.
         </p>
     </div>
 </div>
