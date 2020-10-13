@@ -176,6 +176,13 @@
 	}
 }
 
+.copyright {
+	text-align: center;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	padding-bottom: 40px;
+}
+
 @media screen and (max-width: 1000px){
 	.container[role="main"]{
 		&:before{
