@@ -118,7 +118,7 @@
     }
 }
 </pre>
-        <h5>Docker</h5>
+        <h5 id="launch-docker">Docker</h5>
         <p>
             <strong>Babl</strong> is packaged in a docker container for ease of deployment.
             The base container is tagged as <code>babl:0.7.0</code>,
@@ -135,7 +135,7 @@ ENV JVM_RUNTIME_PARAMETERS="-Dbabl.debug.enabled=true"</pre>
             <a href="https://github.com/babl-ws/babl/blob/master/docker/docker-compose.yaml" target="_blank">example docker-compose</a> file.
             This can be used to connect a simple echo application, with HTML resources hosted by an nginx instance.
         </p>
-        <h5>Standalone</h5>
+        <h5 id="launch-standalone">Standalone</h5>
         <p>
             <strong>Babl</strong> can also be used in a standalone manner.
             Simply build the project, and use the <em>-all</em> variant of the JAR from the <code>build/dist</code> directory:
