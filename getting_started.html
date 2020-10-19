@@ -65,6 +65,7 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="getting_started.html">Getting Started</a></li>
             <li><a href="application.html">Application</a></li>
+            <li><a href="broadcast.html">Broadcast</a></li>
             <li><a href="architecture.html">Architecture</a></li>
             <li><a href="session_lifecycle.html">Session Lifecycle</a></li>
             <li><a href="monitoring.html">Monitoring</a></li>
@@ -121,10 +122,10 @@
         <h5 id="launch-docker">Docker</h5>
         <p>
             <strong>Babl</strong> is packaged in a docker container for ease of deployment.
-            The base container is tagged as <code>babl:0.8.0</code>,
+            The base container is tagged as <code>babl:0.9.0</code>,
             and should be extended with your own container definition:
         </p>
-        <pre>FROM babl:0.8.0
+        <pre>FROM babl:0.9.0
 
 COPY my-app/build/lib/ /babl/lib/
 COPY my-app/build/config/my-app.properties /babl/config
@@ -140,7 +141,7 @@ ENV JVM_RUNTIME_PARAMETERS="-Dbabl.debug.enabled=true"</pre>
             <strong>Babl</strong> can also be used in a standalone manner.
             Simply build the project, and use the <em>-all</em> variant of the JAR from the <code>build/dist</code> directory:
         </p>
-        <pre>$ java -jar /path/to/babl-all-0.8.0.jar /path/to/config.properties</pre>
+        <pre>$ java -jar /path/to/babl-all-0.9.0.jar /path/to/config.properties</pre>
 
         <p>
             Note that there is no legacy HTTP server functionality, so any HTML resources will need to be hosted using a suitable technology.

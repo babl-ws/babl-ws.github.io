@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Babl Low-Latency WebSocket Server - 404</title>
+    <title>Babl Low-Latency WebSocket Server - Broadcast</title>
     <link rel="stylesheet" type="text/css" href="assets/style/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Babl Low Latency Java Websocket Server is a high performance solution for real-time web messaging.">
@@ -80,13 +80,75 @@
 
 <div class="container" role="main">
     <div class="content-heading">
-        <h3>Page Not Found</h3>
+        <h3>Broadcast</h3>
     </div>
     <div class="content-body">
         <p>
-            <a href="index.html">Please visit the index page.</a>
+            In some applications, it is necessary to broadcast the same message to multiple sessions.
+            For example when publishing market-data from an exchange.
         </p>
-   </div>
+        <p>
+            This could be achieved inefficiently by iterating over sessions in the application, but
+            <strong>Babl</strong> provides a mechanism for publishing a single message from the
+            application, that will be routed to multiple sessions in the Session Container.
+        </p>
+        <h4 class="heading heading-primary">Broadcasting via Topics</h4>
+        <p>
+            Broadcasting messages is achieved by managing topics from the application.
+            The application is responsible for creating, deleting and management of
+            topic membership.
+        </p>
+        <p>
+            When the application sends a message to a topic, it is intercepted by all
+            session containers, and published to sessions that are a member of the
+            specified topic.
+        </p>
+        <h4 class="heading heading-primary">Using Broadcast</h4>
+        <p>
+            To use the broadcast function, your application class should implement the
+            <code>BroadcastSource</code>
+            <a href="https://github.com/babl-ws/babl/blob/master/src/main/java/com/aitusoftware/babl/user/BroadcastSource.java" target="_blank">interface</a>.
+        </p>
+        <p>
+            When <strong>Babl</strong> is launched, your application will be provided with an implementation
+            of the <code>Broadcast</code> interface that can be used for topic management and
+            the sending of broadcast messages.
+        </p>
+        <p>
+            An example of using broadcast can be seen below:
+        </p>
+        <pre class="hljs" style="display: block; overflow-x: auto; padding: 0.5em; background: rgb(240, 240, 240) none repeat scroll 0% 0%; color: rgb(68, 68, 68);"><span class="hljs-keyword" style="font-weight: 700;">private</span> <span class="hljs-keyword" style="font-weight: 700;">static</span> <span class="hljs-keyword" style="font-weight: 700;">final</span> <span class="hljs-class"><span class="hljs-keyword" style="font-weight: 700;">class</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">MarketDataApplication</span>
+    <span class="hljs-keyword" style="font-weight: 700;">implements</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">Application</span>, <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">BroadcastSource</span>
+</span>{
+    <span class="hljs-keyword" style="font-weight: 700;">private</span> <span class="hljs-keyword" style="font-weight: 700;">final</span> Set&lt;Long&gt; marketDataListeners = <span class="hljs-keyword" style="font-weight: 700;">new</span> HashSet&lt;&gt;();
+    <span class="hljs-keyword" style="font-weight: 700;">private</span> Broadcast broadcast;
+
+    <span class="hljs-meta" style="color: rgb(31, 113, 153);">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">public</span> <span class="hljs-keyword" style="font-weight: 700;">void</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">setBroadcast</span><span class="hljs-params">(<span class="hljs-keyword" style="font-weight: 700;">final</span> Broadcast broadcast)</span>
+    </span>{
+        <span class="hljs-comment" style="color: rgb(136, 136, 136);">// store the Broadcast implementation</span>
+        <span class="hljs-keyword" style="font-weight: 700;">this</span>.broadcast = broadcast;
+        <span class="hljs-comment" style="color: rgb(136, 136, 136);">// create a topic for broadcast</span>
+        broadcast.createTopic(MARKET_DATA_TOPIC_ID);
+    }
+
+    <span class="hljs-meta" style="color: rgb(31, 113, 153);">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">public</span> <span class="hljs-keyword" style="font-weight: 700;">int</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">onSessionConnected</span><span class="hljs-params">(<span class="hljs-keyword" style="font-weight: 700;">final</span> Session session)</span>
+    </span>{
+        <span class="hljs-comment" style="color: rgb(136, 136, 136);">// add new sessions to the topic</span>
+        broadcast.addToTopic(MARKET_DATA_TOPIC_ID, session.id());
+        <span class="hljs-keyword" style="font-weight: 700;">return</span> SendResult.OK;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">public</span> <span class="hljs-keyword" style="font-weight: 700;">void</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">onMarketDataUpdate</span><span class="hljs-params">(<span class="hljs-keyword" style="font-weight: 700;">final</span> MarketDataUpdate update)</span>
+    </span>{
+        <span class="hljs-keyword" style="font-weight: 700;">final</span> DirectBuffer buffer = serialise(update);
+        <span class="hljs-comment" style="color: rgb(136, 136, 136);">// send a message to all sessions registered on the topic</span>
+        broadcast.sendToTopic(MARKET_DATA_TOPIC_ID, buffer, <span class="hljs-number" style="color: rgb(136, 0, 0);">0</span>, buffer.capacity());
+    }
+}</pre>
+
+    </div>
 </div>
     <div class="copyright">
         Copyright 2020 <a href="https://aitusoftware.com">Aitu Software Limited</a>
