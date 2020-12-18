@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Babl Low-Latency WebSocket Server - Multi topic broadcast</title>
+    <link rel="stylesheet" type="text/css" href="assets/style/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Babl Low Latency Java Websocket Server is a high performance solution for real-time web messaging.">
+    <meta name="keywords" content="Java Websocket web-socket low-latency high-performance garbage-free allocation-free real-time messaging scalable server"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="nav" role="navigation">
+    <div class="nav-top">
+        <ul>
+            <li class="logo" role="logo">
+                <h3>
+                    <p>BABL</p>
+                </h3>
+            </li>
+            <li>
+                <a href="https://hub.docker.com/r/aitusoftware/babl" target="_" role="link">
+                    <svg viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="docker">
+                        <title>Docker Logo</title>
+                        <desc>Docker Link</desc>
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" />
+                                <stop offset="100%" />
+                            </linearGradient>
+                        </defs>
+                        <g transform="translate(10.000000, 18.000000)">
+                            <path d="M36.6816828,14.0007123 C34.5223014,18.6710524 29.1844403,26 17,26 C4.98681223,26 1.89812143,18.7391462 1.16159055,13.9999765 Z M13.914,19.597 C13.69,19.09 13.117,18.906 12.595,19.088 C10.161,19.934 6.036,20.054 3.451,20.054 C3.913,20.738 4.463,21.398 5.107,22.017 C7.258,22.017 10.103,21.888 13.404,20.915 C13.934,20.759 14.138,20.102 13.914,19.597 Z M17,16 C15.8954305,16 15,16.8954305 15,18 C15,19.1045695 15.8954305,20 17,20 C18.1045695,20 19,19.1045695 19,18 C19,16.8954305 18.1045695,16 17,16 Z M36.5,0 C38.908,2.22 39.391,4.265 39,6 C40.339,4.978 42.162,4.533 45,5.516 C43.93,9.829 41.147,10.983 39,11 C38.579,11.003 38.182,10.972 37.828,10.924 C37.6924745,11.4110991 37.4683827,12.1225663 37.1251065,12.9750343 C36.174843,12.766512 35.3893743,12.399283 35,12 C33.819,13.874 27.479,13.461 27,12 C25.625,13.75 20.25,13.438 19,12 C17.938,13.375 12.063,13.688 11,12 C9.94,13.088 5.875,13.688 4,12 C2.96486686,13.0351331 1.2947704,13.0119941 1.03455553,13.001692 C0.859446112,11.2268752 1,10 1,10 L1,10 L31,10 C34.834,10 35,9 35,9 C33.705,7.227 32.586,3.543 36.5,0 Z" id="Path-2"></path>
+                            <path d="M17,17 C17.1030055,17 17.2023735,17.0155739 17.2958778,17.0444954 C17.1209475,17.1222959 17,17.2970236 17,17.5 C17,17.7761424 17.2238576,18 17.5,18 C17.7029764,18 17.8777041,17.8790525 17.9560454,17.7052949 C17.9844261,17.7976265 18,17.8969945 18,18 C18,18.5522847 17.5522847,19 17,19 C16.4477153,19 16,18.5522847 16,18 C16,17.4477153 16.4477153,17 17,17 Z" id="Oval-2"></path>
+                            <path d="M19,10 L14,10 L14,5 L19,5 L19,10 Z M29,5 L24,5 L24,10 L29,10 L29,5 Z M9,5 L4,5 L4,10 L9,10 L9,5 Z M24,0 L24,5 L19,5 L19,0 L24,0 Z M14,0 L14,5 L9,5 L9,0 L14,0 Z" id="Shape"></path>
+                        </g>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/babl-ws/babl" target="_" role="link">
+                    <svg width="163px" height="158px" viewBox="0 0 163 158" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  class="github">
+                        <title>Github Logo</title>
+                        <desc>Github Link</desc>
+                        <g>
+                            <path d="M21,80.387 C21,107.068 38.303,129.704 62.297,137.689 C65.315,138.248 66.423,136.379 66.423,134.784 C66.423,133.344 66.367,128.587 66.341,123.541 C49.541,127.194 45.996,116.416 45.996,116.416 C43.249,109.436 39.291,107.58 39.291,107.58 C33.812,103.832 39.704,103.909 39.704,103.909 C45.768,104.334 48.961,110.132 48.961,110.132 C54.347,119.364 63.088,116.695 66.534,115.152 C67.076,111.25 68.641,108.584 70.368,107.077 C56.955,105.55 42.855,100.372 42.855,77.233 C42.855,70.64 45.214,65.253 49.077,61.024 C48.45,59.502 46.383,53.361 49.662,45.043 C49.662,45.043 54.733,43.42 66.273,51.233 C71.09,49.895 76.256,49.224 81.388,49.201 C86.52,49.224 91.69,49.895 96.516,51.233 C108.042,43.42 113.106,45.043 113.106,45.043 C116.393,53.361 114.325,59.502 113.698,61.024 C117.57,65.253 119.913,70.64 119.913,77.233 C119.913,100.427 105.786,105.534 92.339,107.029 C94.505,108.903 96.435,112.578 96.435,118.212 C96.435,126.291 96.365,132.794 96.365,134.784 C96.365,136.391 97.452,138.274 100.513,137.681 C124.494,129.687 141.775,107.059 141.775,80.387 C141.775,47.035 114.738,20 81.388,20 C48.041,20 21,47.035 21,80.387 Z" id="Fill-52"></path>
+                            <path d="M43.872,106.703 C43.739,107.004 43.267,107.093 42.837,106.887 C42.399,106.69 42.153,106.281 42.295,105.98 C42.425,105.671 42.898,105.586 43.335,105.791 C43.774,105.989 44.024,106.402 43.872,106.703" id="Fill-53"></path>
+                            <path d="M46.318,109.431 C46.03,109.698 45.467,109.574 45.085,109.152 C44.69,108.731 44.616,108.168 44.908,107.897 C45.205,107.63 45.751,107.755 46.147,108.176 C46.542,108.602 46.619,109.161 46.318,109.431" id="Fill-54"></path>
+                            <path d="M48.699,112.909 C48.329,113.166 47.724,112.925 47.35,112.388 C46.98,111.851 46.98,111.207 47.358,110.949 C47.733,110.691 48.329,110.923 48.708,111.456 C49.077,112.001 49.077,112.646 48.699,112.909" id="Fill-55"></path>
+                            <path d="M51.961,116.269 C51.63,116.634 50.925,116.536 50.409,116.038 C49.881,115.551 49.734,114.86 50.066,114.495 C50.401,114.129 51.11,114.232 51.63,114.726 C52.154,115.212 52.314,115.908 51.961,116.269" id="Fill-56"></path>
+                            <path d="M56.461,118.22 C56.315,118.693 55.636,118.908 54.952,118.707 C54.269,118.5 53.822,117.946 53.96,117.468 C54.102,116.992 54.784,116.768 55.473,116.983 C56.155,117.189 56.603,117.739 56.461,118.22" id="Fill-57"></path>
+                            <path d="M61.403,118.582 C61.42,119.08 60.84,119.493 60.122,119.501 C59.4,119.518 58.816,119.115 58.808,118.625 C58.808,118.122 59.375,117.713 60.097,117.701 C60.815,117.687 61.403,118.087 61.403,118.582" id="Fill-58"></path>
+                            <path d="M66.002,117.799 C66.088,118.285 65.589,118.784 64.876,118.916 C64.175,119.045 63.526,118.745 63.437,118.263 C63.35,117.765 63.858,117.266 64.558,117.137 C65.272,117.013 65.911,117.305 66.002,117.799" id="Fill-59"></path>
+                        </g>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="burger">
+        <div></div>
+    </div>
+    <div class="nav-side">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="getting_started.html">Getting Started</a></li>
+            <li><a href="application.html">Application</a></li>
+            <li><a href="broadcast.html">Broadcast</a></li>
+            <li><a href="multi_topic_broadcast.html">Multi-Topic Broadcast</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="session_lifecycle.html">Session Lifecycle</a></li>
+            <li><a href="monitoring.html">Monitoring</a></li>
+            <li><a href="configuration.html">Configuration</a></li>
+            <li><a href="performance_tuning.html">Performance</a></li>
+            <li><a href="open_source.html">Open Source</a></li>
+            <li><a href="pro_features.html">Pro Features</a></li>
+            <li><a href="support.html">Support</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container" role="main">
+    <div class="content-heading">
+        <h3>Multi-Topic Broadcast</h3>
+    </div>
+    <div class="content-body">
+        <p>
+            <strong>Babl</strong> provides the ability to broadcast a message to multiple
+            topics simultaneously. This, coupled with the ability to transform messages
+            within the session container allow for extremely scalable delivery of
+            data flows such as market-data.
+        </p>
+        <p>
+            This could be achieved inefficiently by iterating over sessions in the application, but
+            <strong>Babl</strong> provides a mechanism for publishing a single message from the
+            application, that will be routed to multiple sessions in the Session Container.
+        </p>
+
+        <h4 class="heading heading-primary">Using Multi-Topic Broadcast</h4>
+        <p>
+            To use the multi-topic broadcast function, your application class should implement the
+            <code>BroadcastSource</code>
+            <a href="https://github.com/babl-ws/babl/blob/master/src/main/java/com/aitusoftware/babl/user/BroadcastSource.java" target="_blank">interface</a>.
+        </p>
+        <p>
+            When <strong>Babl</strong> is launched, your application will be provided with an implementation
+            of the <code>Broadcast</code> interface that can be used for topic management and
+            the sending of broadcast messages.
+        </p>
+        <p>
+            An example of using multi-topic broadcast can be seen below:
+        </p>
+        <pre class="hljs" style="display: block; overflow-x: auto; padding: 0.5em; background: rgb(240, 240, 240) none repeat scroll 0% 0%; color: rgb(68, 68, 68);"><span class="hljs-keyword" style="font-weight: 700;">private</span> <span class="hljs-keyword" style="font-weight: 700;">static</span> <span class="hljs-keyword" style="font-weight: 700;">final</span> <span class="hljs-class"><span class="hljs-keyword" style="font-weight: 700;">class</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">MarketDataApplication</span>
+    <span class="hljs-keyword" style="font-weight: 700;">implements</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">Application</span>, <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">BroadcastSource</span>
+</span>{
+    <span class="hljs-keyword" style="font-weight: 700;">private</span> <span class="hljs-keyword" style="font-weight: 700;">final</span> Set&lt;Long&gt; marketDataListeners = <span class="hljs-keyword" style="font-weight: 700;">new</span> HashSet&lt;&gt;();
+    <span class="hljs-keyword" style="font-weight: 700;">private</span> Broadcast broadcast;
+    <span class="hljs-keyword" style="font-weight: 700;">private</span> int[] topicIds;
+
+    <span class="hljs-meta" style="color: rgb(31, 113, 153);">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">public</span> <span class="hljs-keyword" style="font-weight: 700;">void</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">setBroadcast</span><span class="hljs-params">(<span class="hljs-keyword" style="font-weight: 700;">final</span> Broadcast broadcast)</span>
+    </span>{
+        <span class="hljs-comment" style="color: rgb(136, 136, 136);">// store the Broadcast implementation</span>
+        <span class="hljs-keyword" style="font-weight: 700;">this</span>.broadcast = broadcast;
+            <span class="hljs-keyword" style="font-weight: 700;">this</span>.topicIds = <span class="hljs-keyword" style="font-weight: 700;">new</span> int[] {
+            MARKET_DATA_FULL_DEPTH, MARKET_DATA_TOP_OF_BOOK};
+        <span class="hljs-comment" style="color: rgb(136, 136, 136);">// create a topic for broadcast</span>
+        broadcast.createTopic(MARKET_DATA_FULL_DEPTH);
+        broadcast.createTopic(MARKET_DATA_TOP_OF_BOOK);
+    }
+
+    <span class="hljs-meta" style="color: rgb(31, 113, 153);">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">public</span> <span class="hljs-keyword" style="font-weight: 700;">int</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">onSessionConnected</span><span class="hljs-params">(<span class="hljs-keyword" style="font-weight: 700;">final</span> Session session)</span>
+    </span>{
+        <span class="hljs-comment" style="color: rgb(136, 136, 136);">// add new sessions to the topic</span>
+        broadcast.addToTopic(MARKET_DATA_TOP_OF_BOOK, session.id());
+        <span class="hljs-keyword" style="font-weight: 700;">return</span> SendResult.OK;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">public</span> <span class="hljs-keyword" style="font-weight: 700;">void</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">onMarketDataUpdate</span><span class="hljs-params">(<span class="hljs-keyword" style="font-weight: 700;">final</span> MarketDataUpdate update)</span>
+    </span>{
+        <span class="hljs-keyword" style="font-weight: 700;">final</span> DirectBuffer buffer = serialise(update);
+        <span class="hljs-comment" style="color: rgb(136, 136, 136);">// send a message to all sessions registered on the topic</span>
+        broadcast.sendToTopics(topicIds, buffer, <span class="hljs-number" style="color: rgb(136, 0, 0);">0</span>, buffer.capacity());
+    }
+}</pre>
+    <p>
+        In order to make this feature useful, messages can be transformed on a per-topic basic
+        in the session container. To do this, the application developer should configure
+        a <a href="https://github.com/babl-ws/babl/blob/master/src/main/java/com/aitusoftware/babl/websocket/broadcast/MessageTransformer.java" target="_blank">
+        <code>MessageTransformer</code></a> implementation:
+    </p>
+        <pre class="hljs" style="display: block; overflow-x: auto; padding: 0.5em; background: rgb(240, 240, 240) none repeat scroll 0% 0%; color: rgb(68, 68, 68);"><span class="hljs-keyword" style="font-weight: 700;">final</span> <span class="hljs-class"><span class="hljs-keyword" style="font-weight: 700;">class</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">MarketDataTransformer</span>
+    <span class="hljs-keyword" style="font-weight: 700;">implements</span> <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">MessageTransformer</span>
+</span>{
+    <span class="hljs-keyword" style="font-weight: 700;">private</span> <span class="hljs-keyword" style="font-weight: 700;">final</span> ExpandableArrayBuffer dst =
+        <span class="hljs-keyword" style="font-weight: 700;">new</span> ExpandableArrayBuffer();
+    <span class="hljs-keyword" style="font-weight: 700;">private</span> <span class="hljs-keyword" style="font-weight: 700;">final</span> TransformResult transformResult =
+        <span class="hljs-keyword" style="font-weight: 700;">new</span> TransformResult();
+
+    <span class="hljs-meta" style="color: rgb(31, 113, 153);">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword" style="font-weight: 700;">public</span> TransformResult <span class="hljs-title" style="color: rgb(136, 0, 0); font-weight: 700;">transform</span><span class="hljs-params">(
+        <span class="hljs-keyword" style="font-weight: 700;">final</span> <span class="hljs-keyword" style="font-weight: 700;">int</span> topicId,
+        <span class="hljs-keyword" style="font-weight: 700;">final</span> DirectBuffer input,
+        <span class="hljs-keyword" style="font-weight: 700;">final</span> <span class="hljs-keyword" style="font-weight: 700;">int</span> offset,
+        <span class="hljs-keyword" style="font-weight: 700;">final</span> <span class="hljs-keyword" style="font-weight: 700;">int</span> length)</span>
+    </span>{
+        <span class="hljs-keyword" style="font-weight: 700;">if</span> (topicId == MARKET_DATA_TOP_OF_BOOK)
+        {
+            transformResult.set(dst, <span class="hljs-number" style="color: rgb(136, 0, 0);">0</span>, encodeTopOfBook(input, offset, length));
+        }
+        <span class="hljs-keyword" style="font-weight: 700;">else</span>
+        {
+            transformResult.set(dst, <span class="hljs-number" style="color: rgb(136, 0, 0);">0</span>, encodeFullDepth(input, offset, length));
+        }
+        <span class="hljs-keyword" style="font-weight: 700;">return</span> transformResult;
+    }
+}</pre>
+        <p>Message transformers are supplied to the session container config:</p>
+<pre class="hljs" style="display: block; overflow-x: auto; padding: 0.5em; background: rgb(240, 240, 240) none repeat scroll 0% 0%; color: rgb(68, 68, 68);"><span class="hljs-keyword" style="font-weight: 700;">new</span> BablConfig().sessionContainerConfig()
+    .messageTransformerFactory(topicId -&gt; <span class="hljs-keyword" style="font-weight: 700;">new</span> MarketDataTransformer());</pre>
+    </div>
+</div>
+    <div class="copyright">
+        Copyright 2020 <a href="https://aitusoftware.com">Aitu Software Limited</a>
+    </div>
+    <script rel="javascript" src="assets/js/babl.js"></script>
+</body>
+</html>
